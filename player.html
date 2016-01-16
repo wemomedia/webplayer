@@ -35,6 +35,7 @@
 	<script src="./js/player.js"></script>
 	<script>
 	
+	var DEFAULT_FILENAME = 'encounterTest_01082015.mp4';
 	window.onload = function() {
 		var container = document.getElementById("container");
 
@@ -49,11 +50,8 @@
 	    );
 
 		var root = '/360videos/';
-		var filename = 'encounterTest_01082015.mp4';
+		var filename = params.name ? params.name : DEFAULT_FILENAME;
 
-		if (params.name) {
-			filename = params.name;
-		}
 		var src = root + filename;
 
 		var player = new WEVR.Player({ 
