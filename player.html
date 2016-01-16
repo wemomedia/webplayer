@@ -35,7 +35,9 @@
 	<script src="./js/player.js"></script>
 	<script>
 	
+	var WVR_ROOT = '/360videos/';
 	var DEFAULT_FILENAME = 'encounterTest_01082015.mp4';
+
 	window.onload = function() {
 		var container = document.getElementById("container");
 
@@ -49,7 +51,7 @@
 	        }
 	    );
 
-		var root = '/360videos/';
+		var root = WVR_ROOT;
 		var filename = params.name ? params.name : DEFAULT_FILENAME;
 
 		var src = root + filename;
