@@ -1,4 +1,4 @@
-Use correct HTML doc type - what is that anyway?
+* Use correct HTML doc type - what is that anyway?
 Make sure current versions of Three.js, Orbit controls etc.
 
 
