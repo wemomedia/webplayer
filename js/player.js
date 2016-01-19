@@ -38,6 +38,7 @@ WEVR.Player.prototype.initScene = function() {
     var video = document.createElement('video');
     video.autoplay = true;
     video.src = this.src;
+    video.crossOrigin = "anonymous";
 
 	var texture = new THREE.VideoTexture( video );
 	texture.minFilter = THREE.LinearFilter;
