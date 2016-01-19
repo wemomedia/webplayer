@@ -1,4 +1,5 @@
 WEVR.Player = function(params) {
+    this.fullscreen = false;
 	this.container = params.container;
     this.src = params.src;
     this.initThreeJS();
@@ -10,7 +11,7 @@ WEVR.Player = function(params) {
 WEVR.Player.prototype = new Object;
 
 WEVR.Player.prototype.initThreeJS = function() {
-	// Create the Three.js renderer and attach it to our canvas
+	// Create the Three.js renderer and attach it to our container
     this.renderer = new THREE.WebGLRenderer( { antialias: true} );
 
     this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
@@ -18,11 +19,21 @@ WEVR.Player.prototype.initThreeJS = function() {
     // Set the viewport size
     this.container.appendChild(this.renderer.domElement);
 
+    this.canvas = this.renderer.domElement;
+
     var that = this;
     
 	window.addEventListener( 'resize', function() {
     	that.refreshSize();
     }, false );
+
+    var fullScreenChange =
+        this.renderer.domElement.mozRequestFullScreen? 'mozfullscreenchange' : 'webkitfullscreenchange';
+    
+    document.addEventListener( fullScreenChange, 
+            function(e) {that.onFullScreenChanged(e); }, false );
+
+
 }
 
 WEVR.Player.prototype.initScene = function() {
@@ -39,6 +50,7 @@ WEVR.Player.prototype.initScene = function() {
     video.autoplay = true;
     video.src = this.src;
     video.crossOrigin = "anonymous";
+    this.video = video;
 
 	var texture = new THREE.VideoTexture( video );
 	texture.minFilter = THREE.LinearFilter;
@@ -113,10 +125,35 @@ WEVR.Player.prototype.present = function() {
 
 WEVR.Player.prototype.refreshSize = function() {
 
-	var fullWidth = this.container.clientWidth,
-        fullHeight = this.container.clientHeight;
+	var fullWidth = this.fullscreen ? window.innerWidth : this.container.clientWidth,
+        fullHeight = this.fullscreen ? window.innerHeight : this.container.clientHeight;
 
 	this.renderer.setSize(fullWidth, fullHeight);
 }
 
+WEVR.Player.prototype.fullScreen = function() {
 
+    var canvas = this.canvas;
+
+    if (canvas.requestFullscreen) {
+        canvas.requestFullscreen();
+    } else if (canvas.mozRequestFullScreen) {
+        canvas.mozRequestFullScreen(); // Firefox
+    } else if (canvas.webkitRequestFullscreen) {
+        canvas.webkitRequestFullscreen(); // Chrome and Safari
+    }
+}
+
+WEVR.Player.prototype.onFullScreenChanged = function() {
+
+    if ( !document.mozFullscreenElement && !document.webkitFullscreenElement ) {
+        this.fullscreen = false;
+    }
+    else {
+        this.fullscreen = true;
+    }
+
+    if (this.fullscreen) {
+        this.refreshSize();
+    }
+}
