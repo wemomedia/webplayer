@@ -1,0 +1,143 @@
+<%
+# param @post 
+# param @url - url to mp4
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Wevr Player</title>
+      <style>
+          body {
+              margin: 0px;
+              background-color: #000000;
+              overflow: hidden;
+          }
+
+          #container {
+          	width:100%;
+          	height:95%;
+          	position:absolute;
+          	border:none;
+          	overflow:hidden;
+          	background-color: green;
+          }
+
+          #video-controls {
+          	top:95%;
+          	height:5%;
+          	position:absolute;
+          	border:none;
+          	color:white;
+          	font-family:sans-serif;
+          	font-size: 12px;
+          	overflow:hidden;
+          }
+
+      </style>
+</head>
+<body>
+	<div id="container"></div>
+	  <!-- Video Controls -->
+	  <div id="video-controls">
+	    <button type="button" id="play-pause">Play</button>
+	    <input type="range" id="seek-bar" value="0">
+	    <button type="button" id="mute">Mute</button>
+	    <label>Volume</label>
+	    <input type="range" id="volume-bar" min="0" max="1" step="0.1" value="1">
+	    <button type="button" id="full-screen">FullScreen</button>
+	  </div>
+
+	
+
+	<script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
+	<script src="/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js"></script>
+	<script src="/xassets/vendor/webplayer/libs/requestAnimationFrame/RequestAnimationFrame.js"></script>
+	<script src="/xassets/vendor/webplayer/js/wevr.js?v1"></script>
+	<script src="/xassets/vendor/webplayer/js/player.js?v1"></script>
+	<script>
+	
+	
+	window.onload = function() {
+		var container = document.getElementById("container");
+
+		var player = new WEVR.Player({ 
+				container : container,
+				src : "<%=@url%>",
+			});
+
+		var video = player.video;
+
+		// Buttons
+		var playButton = document.getElementById("play-pause");
+		var muteButton = document.getElementById("mute");
+		var fullScreenButton = document.getElementById("full-screen");
+
+		// Sliders
+		var seekBar = document.getElementById("seek-bar");
+		var volumeBar = document.getElementById("volume-bar");
+
+		// Event listener for the play/pause button
+		playButton.addEventListener("click", function() {
+		  if (video.paused == true) {
+		    // Play the video
+		    video.play();
+
+		    // Update the button text to 'Pause'
+		    playButton.innerHTML = "Pause";
+		  } else {
+		    // Pause the video
+		    video.pause();
+
+		    // Update the button text to 'Play'
+		    playButton.innerHTML = "Play";
+		  }
+		});
+
+		// Event listener for the mute button
+		muteButton.addEventListener("click", function() {
+		  if (video.muted == false) {
+		    // Mute the video
+		    video.muted = true;
+
+		    // Update the button text
+		    muteButton.innerHTML = "Unmute";
+		  } else {
+		    // Unmute the video
+		    video.muted = false;
+
+		    // Update the button text
+		    muteButton.innerHTML = "Mute";
+		  }
+		});
+
+		// Event listener for the seek bar
+		seekBar.addEventListener("change", function() {
+		  // Calculate the new time
+		  var time = video.duration * (seekBar.value / 100);
+
+		  // Update the video time
+		  video.currentTime = time;
+		});		
+
+		// Update the seek bar as the video plays
+		video.addEventListener("timeupdate", function() {
+		  // Calculate the slider value
+		  var value = (100 / video.duration) * video.currentTime;
+
+		  // Update the slider value
+		  seekBar.value = value;
+		});
+
+		// Event listener for the full-screen button
+		fullScreenButton.addEventListener("click", function() {
+			player.fullScreen();
+		});
+
+
+	}
+
+	</script>
+	
+</body>
+</html>
