@@ -1,7 +1,21 @@
-* Use correct HTML doc type - what is that anyway?
-Make sure current versions of Three.js, Orbit controls etc.
-Switch to minified three.js
+1. Use correct HTML doc type - what is that anyway? 
+-- done
 
+2.  Make sure current versions of Three.js, Orbit controls etc.
+
+3. Switch to minified three.js
+
+4. Credit player skin people
+- http://codepen.io/frytyler/pen/juGfk
+- this:
+/*
+JS Modified from a tutorial found here: 
+http://www.inwebson.com/html5/custom-html5-video-controls-with-jquery/
+
+I really wanted to learn how to skin html5 video.
+*/
+
+-- done, it's in the comments anyway
 
 
 

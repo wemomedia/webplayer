@@ -129,11 +129,15 @@ WEVR.Player.prototype.refreshSize = function() {
         fullHeight = this.fullscreen ? window.innerHeight : this.container.clientHeight;
 
 	this.renderer.setSize(fullWidth, fullHeight);
+
+    if (this.fullscreen) {
+        this.container.style.left = this.container.style.top = 0;
+    }
 }
 
 WEVR.Player.prototype.fullScreen = function() {
 
-    var canvas = this.canvas;
+    var canvas = this.container.parentElement;
 
     if (canvas.requestFullscreen) {
         canvas.requestFullscreen();
