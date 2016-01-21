@@ -401,7 +401,10 @@ http://codepen.io/frytyler/pen/juGfk
 			}
 		};
 
-		setTimeout(startBuffer, 500);
+		video.addEventListener("canplay", function() {
+			setTimeout(startBuffer, 150);
+		});
+
 
 		// Event listener for the full-screen button
 		fullScreenButton.addEventListener("click", function() {
