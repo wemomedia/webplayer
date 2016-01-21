@@ -2,6 +2,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script>
+	var VIDEO_URL = '/360videos/encounterTest_01082015.mp4';
+</script>
 <title>Wevr Player</title>
       <style>
           body {
@@ -252,7 +255,6 @@ http://codepen.io/frytyler/pen/juGfk
 -- TP
 */
 
-	var DEFAULT_URL = '/360videos/encounterTest_01082015.mp4';
 
 	window.onload = function() {
 
@@ -269,7 +271,7 @@ http://codepen.io/frytyler/pen/juGfk
 
 	    // WebGL player/canvas
 		var container = document.getElementById("container");
-		var src = params.url ? params.url : DEFAULT_URL;
+		var src = params.url ? params.url : VIDEO_URL;
 
 		var player = new WEVR.Player({ 
 				container : container,
