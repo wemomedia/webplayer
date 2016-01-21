@@ -16,7 +16,6 @@
           	position:absolute;
           	border:none;
           	overflow:hidden;
-          	background-color: green;
           }
 
           #video-controls {
@@ -81,7 +80,7 @@ video { border-radius: 6px; }
 .control{
 	color:#ccc;
 	position:absolute;
-	bottom:30px;
+	bottom:32px;
 	left:10px;
 	width:360px;
 	z-index:5;
@@ -240,10 +239,14 @@ video { border-radius: 6px; }
 
 <section id="wrapper">
 
-		<div class="caption">Prometheus</div>
+		<!-- N.B.: skip caption for now, TBD. --TP 
+
+		<div id="caption_label" class="caption">Prometheus</div>
+		-->
+
 		<div class="control">
 			<div class="btmControl">
-				<div class="btnPlay btn" title="Play/Pause video"><span class="icon-play"></span></div>
+				<div id="play_button" class="btnPlay btn" title="Play/Pause video"><span class="icon-pause"></span></div>
 				<div class="progress-bar">
 					<div class="progress">
 						<span id="buffer_bar" class="bufferBar"></span>
@@ -254,7 +257,7 @@ video { border-radius: 6px; }
 					<span class="volumeBar"></span>
 				</div>-->
 				<div class="sound sound2 btn" title="Mute/Unmute sound"><span class="icon-sound"></span></div>
-				<div class="btnFS btn" title="Switch to full screen"><span class="icon-fullscreen"></span></div>
+				<div id="full_screen" class="btnFS btn" title="Switch to full screen"><span class="icon-fullscreen"></span></div>
 			</div>
 			
 		</div>
@@ -300,9 +303,9 @@ video { border-radius: 6px; }
 		var video = player.video;
 
 		// Buttons
-		var playButton = document.getElementById("play-pause");
+		var playButton = document.getElementById("play_button");
 		var muteButton = document.getElementById("mute");
-		var fullScreenButton = document.getElementById("full-screen");
+		var fullScreenButton = document.getElementById("full_screen");
 
 		// Sliders
 		var seekBar = document.getElementById("seek-bar");
@@ -314,14 +317,18 @@ video { border-radius: 6px; }
 		    // Play the video
 		    video.play();
 
-		    // Update the button text to 'Pause'
-		    playButton.innerHTML = "Pause";
+		    var playelts = playButton.getElementsByClassName('icon-play');
+		    playelts[0].classList.add('icon-pause');
+		    playelts[0].classList.remove('icon-play');
+
 		  } else {
 		    // Pause the video
 		    video.pause();
 
-		    // Update the button text to 'Play'
-		    playButton.innerHTML = "Play";
+		    var playelts = playButton.getElementsByClassName('icon-pause');
+
+		    playelts[0].classList.add('icon-play');
+		    playelts[0].classList.remove('icon-pause');
 		  }
 		});
 
