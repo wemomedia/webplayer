@@ -12,7 +12,7 @@
 
           #container {
           	width:100%;
-          	height:95%;
+          	height:100%;
           	position:absolute;
           	border:none;
           	overflow:hidden;
@@ -80,7 +80,7 @@ video { border-radius: 6px; }
 .control{
 	color:#ccc;
 	position:absolute;
-	bottom:32px;
+	bottom:2px;
 	left:10px;
 	width:360px;
 	z-index:5;
@@ -135,7 +135,7 @@ video { border-radius: 6px; }
 	display: block;
 	margin: 8px 0 0 8px;
 }
-.control .muted .icon-sound{
+.control .muted.icon-sound {
 	width: 7px !important;
 }
 .control .btnFS{
@@ -227,6 +227,9 @@ video { border-radius: 6px; }
 	<div id="container"></div>
 
 	  <!-- Video Controls -->
+	  <!-- N.B.: hide old ones for now, delete when everything is working
+	  	-- TP
+
 	  <div id="video-controls">
 	    <button type="button" id="play-pause">Pause</button>
 	    <input type="range" id="seek-bar" value="0">
@@ -235,7 +238,7 @@ video { border-radius: 6px; }
 	    <input type="range" id="volume-bar" min="0" max="1" step="0.1" value="1">
 	    <button type="button" id="full-screen">FullScreen</button>
 	  </div>
-
+		-->
 
 <section id="wrapper">
 
@@ -244,10 +247,10 @@ video { border-radius: 6px; }
 		<div id="caption_label" class="caption">Prometheus</div>
 		-->
 
-		<div class="control">
+		<div id="player_controls" class="control">
 			<div class="btmControl">
 				<div id="play_button" class="btnPlay btn" title="Play/Pause video"><span class="icon-pause"></span></div>
-				<div class="progress-bar">
+				<div id="progress_bar" class="progress-bar">
 					<div class="progress">
 						<span id="buffer_bar" class="bufferBar"></span>
 						<span id="time_bar" class="timeBar"></span>
@@ -256,7 +259,7 @@ video { border-radius: 6px; }
 				<!--<div class="volume" title="Set volume">
 					<span class="volumeBar"></span>
 				</div>-->
-				<div class="sound sound2 btn" title="Mute/Unmute sound"><span class="icon-sound"></span></div>
+				<div id="mute_unmute" class="sound sound2 btn" title="Mute/Unmute sound"><span class="icon-sound"></span></div>
 				<div id="full_screen" class="btnFS btn" title="Switch to full screen"><span class="icon-fullscreen"></span></div>
 			</div>
 			
@@ -281,6 +284,21 @@ video { border-radius: 6px; }
 
 	window.onload = function() {
 		var container = document.getElementById("container");
+		var controls = document.getElementById("player_controls");
+
+		function positionControls() {
+
+			var width = container.offsetWidth;
+			var cwidth = controls.offsetWidth;
+			var left = (width - cwidth) / 2;
+			controls.style.left = left + "px";
+		}
+
+		window.addEventListener( 'resize', function() {
+	    	positionControls();
+	    }, false );
+
+		positionControls();
 
 	    var str = window.location.search;
 	    var params = {};
@@ -304,12 +322,14 @@ video { border-radius: 6px; }
 
 		// Buttons
 		var playButton = document.getElementById("play_button");
-		var muteButton = document.getElementById("mute");
+		var muteButton = document.getElementById("mute_unmute");
 		var fullScreenButton = document.getElementById("full_screen");
 
+		/* N.B.: old -- TP
 		// Sliders
 		var seekBar = document.getElementById("seek-bar");
 		var volumeBar = document.getElementById("volume-bar");
+		*/
 
 		// Event listener for the play/pause button
 		playButton.addEventListener("click", function() {
@@ -331,24 +351,25 @@ video { border-radius: 6px; }
 		    playelts[0].classList.remove('icon-pause');
 		  }
 		});
-
+	
 		// Event listener for the mute button
 		muteButton.addEventListener("click", function() {
 		  if (video.muted == false) {
 		    // Mute the video
 		    video.muted = true;
 
-		    // Update the button text
-		    muteButton.innerHTML = "Unmute";
+		    var muteelts = muteButton.getElementsByClassName('icon-sound');
+		    muteelts[0].classList.add('muted');
 		  } else {
 		    // Unmute the video
 		    video.muted = false;
 
-		    // Update the button text
-		    muteButton.innerHTML = "Mute";
+		    var muteelts = muteButton.getElementsByClassName('icon-sound');
+		    muteelts[0].classList.remove('muted');
 		  }
 		});
 
+		/* N.B.: old -- TP
 		// Event listener for the seek bar
 		seekBar.addEventListener("change", function() {
 		  // Calculate the new time
@@ -357,6 +378,43 @@ video { border-radius: 6px; }
 		  // Update the video time
 		  video.currentTime = time;
 		});		
+		*/
+
+		var timeDrag = false;	/* check for drag event */
+		var progressBar = document.getElementById("progress_bar");
+		progressBar.addEventListener('mousedown', function(e) {
+			timeDrag = true;
+			updatebar(e.pageX);
+		});
+		progressBar.addEventListener('mouseup', function(e) {
+			if(timeDrag) {
+				timeDrag = false;
+				updatebar(e.pageX);
+			}
+		});
+		progressBar.addEventListener('mousemove', function(e) {
+			if(timeDrag) {
+				updatebar(e.pageX);
+			}
+		});
+		var updatebar = function(x) {
+			
+			//calculate drag position
+			//and update video currenttime
+			//as well as progress bar
+			var maxduration = video.duration;
+			var position = x - (progressBar.offsetParent.offsetLeft + progressBar.offsetLeft);
+			var percentage = 100 * position / progressBar.offsetWidth;
+			if(percentage > 100) {
+				percentage = 100;
+			}
+			if(percentage < 0) {
+				percentage = 0;
+			}
+			timeBar.style.width = percentage + '%';	
+			video.currentTime = maxduration * percentage / 100;
+		};
+
 
 		var timeBar = document.getElementById("time_bar");
 
@@ -366,7 +424,9 @@ video { border-radius: 6px; }
 		  var value = (100 / video.duration) * video.currentTime;
 
 		  // Update the slider value
+		  /* N.B.: OLD -- TP 
 		  seekBar.value = value;
+		  */
 		  timeBar.style.width = 240 * (video.currentTime / video.duration) + "px";
 		});
 
