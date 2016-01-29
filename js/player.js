@@ -2,6 +2,7 @@ WEVR.Player = function(params) {
     this.fullscreen = false;
 	this.container = params.container;
     this.src = params.src;
+    this.isPlaying = false;
     this.initThreeJS();
     this.initScene();
     this.initControls();
@@ -42,22 +43,25 @@ WEVR.Player.prototype.initScene = function() {
 
     // Add  a camera so we can view the scene
     var camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 1, 10000 );
-    camera.position.z = .001;
+    camera.position.z =  .001;
 	scene.add(camera);
+
+    //var initialPlayState = !Util.isAndroid();
+    var initialPlayState =false;
+    this.isPlaying =  initialPlayState;
 
 	// Create a video texture for playing the movie
     var video = document.createElement('video');
-    video.autoplay = true;
+    video.autoplay = false;
     video.src = this.src;
     video.crossOrigin = "anonymous";
     this.video = video;
 
-	var texture = new THREE.VideoTexture( video );
+    var texture = new THREE.VideoTexture( video );
 	texture.minFilter = THREE.LinearFilter;
 	texture.magFilter = THREE.LinearFilter;
-	texture.format = THREE.RGBFormat;        
+	texture.format = THREE.RGBFormat;
 
-    // 
     var material = new THREE.MeshBasicMaterial({ map: texture, side:THREE.DoubleSide });
 
     // Create the sky sphere geometry
@@ -77,6 +81,190 @@ WEVR.Player.prototype.initScene = function() {
     this.sphere = sphere;
 
     this.lastFrameTime = 0;
+}
+
+WEVR.Player.prototype.createDOMPlayerControls = function() {
+//DOM-based player controls
+    var canvasControls = document.getElementById("player_controls");
+    var playBtmControl = document.createElement("div");
+    playBtmControl.classList.add("btmControl");
+
+//create Play Button
+    var playButton = document.createElement("div");
+    playButton.classList.add("btnPlay", "btn");
+    playButton.title = "Play/Pause video";
+    playButton.setAttribute("id", "play_button");
+
+    this.playButtonIcon = document.createElement("span");
+    this.playButtonIcon.classList.add('icon-play');
+    playButton.appendChild(this.playButtonIcon);
+    playBtmControl.appendChild(playButton);
+
+
+//create Progress Bar
+    this.progressBar = document.createElement("div");
+    this.progressBar.classList.add("progress-bar");
+    var progress = document.createElement("div");
+    progress.classList.add("progress");
+    this.progressBar.appendChild(progress);
+    this.bufferBar = document.createElement("span");
+    this.bufferBar.classList.add("bufferBar");
+    progress.appendChild(this.bufferBar);
+    this.timeBar = document.createElement("span");
+    this.timeBar.classList.add("timeBar");
+    progress.appendChild(this.timeBar);
+    playBtmControl.appendChild(this.progressBar);
+
+//createMute Button
+    var muteButton = document.createElement("div");
+    muteButton.classList.add("sound", "sound2", "btn");
+    muteButton.title = "Mute/Unmute sound";
+    var muteButtonIcon = document.createElement("span");
+    muteButtonIcon.classList.add("icon-sound");
+    muteButton.appendChild(muteButtonIcon);
+    playBtmControl.appendChild(muteButton);
+
+
+//create full-screen button
+    var fullScreenButton = document.createElement("div");
+    fullScreenButton.classList.add("btnFS", "btn");
+    fullScreenButton.title = "Switch to full screen";
+    var fullScreenButtonIcon = document.createElement("span");
+    fullScreenButtonIcon.classList.add("icon-fullscreen");
+    fullScreenButton.appendChild(fullScreenButtonIcon);
+    playBtmControl.appendChild(fullScreenButton);
+
+    canvasControls.appendChild(playBtmControl);
+
+    var that = this;
+
+    // Event listener for the play/pause button
+    playButton.addEventListener("click", function() {
+        if (that.video.paused == true) {
+            //Note: we keep track of our intent to play instead of querying video.isPlaying,
+            //  which may return false while it is buffering, but we want the buttons to
+            //  show that as far as the user is concerned, it is in 'play' mode (either playing
+            //  or about to play)
+            that.isPlaying = true;
+            // Play the video
+            that.video.play();
+        } else {
+            that.isPlaying = false;
+            // Pause the video
+            that.video.pause();
+        }
+       that.setVideoUIState();
+
+    });
+
+    // Event listener for the mute button
+    muteButton.addEventListener("click", function() {
+        if (that.video.muted == false) {
+            // Mute the video
+            that.video.muted = true;
+
+            var muteelts = muteButton.getElementsByClassName('icon-sound');
+            muteelts[0].classList.add('muted');
+        } else {
+            // Unmute the video
+            that.video.muted = false;
+
+            var muteelts = muteButton.getElementsByClassName('icon-sound');
+            muteelts[0].classList.remove('muted');
+        }
+    });
+
+    // Event listeners for scrubbing
+    var timeDrag = false;
+    this.progressBar.addEventListener('mousedown', function(e) {
+        timeDrag = true;
+        updatebar(e.pageX);
+    });
+    this.progressBar.addEventListener('mouseup', function(e) {
+        if(timeDrag) {
+            timeDrag = false;
+            updatebar(e.pageX);
+        }
+    });
+    this.progressBar.addEventListener('mousemove', function(e) {
+        if(timeDrag) {
+            updatebar(e.pageX);
+        }
+    });
+    var updatebar = function(x) {
+
+        //calculate drag position
+        //and update video currenttime
+        //as well as progress bar
+        var maxduration = video.duration;
+        var position = x - (that.progressBar.offsetParent.offsetLeft + that.progressBar.offsetLeft);
+        var percentage = 100 * position / that.progressBar.offsetWidth;
+        if(percentage > 100) {
+            percentage = 100;
+        }
+        if(percentage < 0) {
+            percentage = 0;
+        }
+        that.timeBar.style.width = percentage + '%';
+        that.video.currentTime = maxduration * percentage / 100;
+    };
+
+    // Update the scrubber bar as the video plays
+    this.video.addEventListener("timeupdate", function() {
+        // Calculate the slider value
+        var value = (100 / that.video.duration) * that.video.currentTime;
+
+        // Update the slider value
+        /* N.B.: OLD -- TP
+         seekBar.value = value;
+         */
+        that.timeBar.style.width = 240 * (that.video.currentTime / that.video.duration) + "px";
+    });
+
+    // Timer to keep the buffer bar up to date
+    var startBuffer = function() {
+        var currentBuffer = that.video.buffered.end(0);
+        var maxduration = that.video.duration;
+        var perc = 100 * currentBuffer / maxduration;
+        that.bufferBar.style.width = perc + '%';
+
+        if(currentBuffer < maxduration) {
+            setTimeout(startBuffer, 500);
+        }
+    };
+
+    this.video.addEventListener("canplay", function() {
+        setTimeout(startBuffer, 150);
+    });
+
+
+    // Event listener for the full-screen button
+    fullScreenButton.addEventListener("click", function() {
+        that.fullScreen();
+    });
+}
+
+// Positioning logic to center the playback controls
+WEVR.Player.prototype.positionControls = function(){
+
+ // Playback controls
+    var controls = document.getElementById("player_controls");
+
+    var width = this.container.offsetWidth;
+    var cwidth = controls.offsetWidth;
+    var left = (width - cwidth) / 2;
+    controls.style.left = left + "px";
+}
+
+WEVR.Player.prototype.setVideoUIState = function(){
+
+     if (this.isPlaying == true) {
+        this.playButtonIcon.classList.add('icon-pause');
+         this.playButtonIcon.classList.remove('icon-play');
+    } else {
+         this.playButtonIcon.classList.add('icon-play');
+         this.playButtonIcon.classList.remove('icon-pause');
+    }
 }
 
 WEVR.Player.prototype.initControls = function() {
@@ -161,3 +349,25 @@ WEVR.Player.prototype.onFullScreenChanged = function() {
         this.refreshSize();
     }
 }
+
+//Utils
+Util = {};
+Util.isIOS = function() {
+    return /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+};
+
+Util.isAndroid = function() {
+    var returnVal =  /Android/g.test(navigator.userAgent);
+    return returnVal
+};
+
+
+Util.isIFrame = function() {
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
+};
+
+
