@@ -19,3 +19,6 @@ I really wanted to learn how to skin html5 video.
 
 5. need to add incrementing querystring into js urls (player.js, wevr.js) because CDN caches them. can also use the rails helper jsfile(path) in erb version.
 
+
+6. Get or make NEW ART - this stuff is in external 
+
