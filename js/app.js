@@ -10,8 +10,6 @@
  -- TP
  */
 
-var player;//JM: added this global
-
 
 window.onload = function() {
 
@@ -30,7 +28,7 @@ window.onload = function() {
     var container = document.getElementById("container");
     var src = params.url ? params.url : VIDEO_URL;
 
-    player = new WEVR.Player({
+    var player = new WEVR.Player({
         container : container,
         src : src
     });
