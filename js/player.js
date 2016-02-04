@@ -263,6 +263,13 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     });
 }
 
+WEVR.Player.prototype.play = function() {
+    this.isPlaying = true;
+    // Play the video
+    this.video.play();
+    this.setVideoUIState();
+}
+
 // Positioning logic to center the playback controls
 WEVR.Player.prototype.positionControls = function(){
 
