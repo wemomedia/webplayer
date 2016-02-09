@@ -35,6 +35,9 @@ window.onload = function() {
 
     player.createDOMPlayerControls();
 
+    if (! Util.isAndroid()) {
+        player.play();
+    }
     player.setVideoUIState();
 
    window.addEventListener( 'resize', function() {

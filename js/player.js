@@ -1,5 +1,5 @@
 WEVR.Player = function(params) {
-    this.fullscreen = false;
+    this.isFullScreen = false;
 	this.container = params.container;
     this.src = params.src;
     this.isPlaying = false;
@@ -85,7 +85,7 @@ WEVR.Player.prototype.initScene = function() {
 
 WEVR.Player.prototype.createDOMPlayerControls = function() {
 //DOM-based player controls
-    var canvasControls = document.getElementById("player_controls");
+    var playerControls = document.getElementById("player_controls");
     var playBtmControl = document.createElement("div");
     playBtmControl.classList.add("btmControl");
 
@@ -134,28 +134,54 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     fullScreenButton.appendChild(fullScreenButtonIcon);
     playBtmControl.appendChild(fullScreenButton);
 
-    canvasControls.appendChild(playBtmControl);
+    playerControls.appendChild(playBtmControl);
 
+
+    if (Util.isAndroid()) {
+//create centered Play Button
+        this.playMiddleButton = document.createElement("div");
+        this.playMiddleButton.classList.add("playMiddleButton", "btn");
+        this.playMiddleButton.title = "Play/Pause video";
+        this.playMiddleButton.setAttribute("id", "play_middle_button");
+
+        var playMiddleButtonIcon = document.createElement("span");
+        playMiddleButtonIcon.classList.add('icon-play-middle');
+        this.playMiddleButton.appendChild(playMiddleButtonIcon);
+        var centeredPlayButton = document.getElementById("centered_play_button");
+
+        centeredPlayButton.appendChild(this.playMiddleButton);
+    }
     var that = this;
 
-    // Event listener for the play/pause button
-    playButton.addEventListener("click", function() {
+    var clickPlay =function() {
         if (that.video.paused == true) {
             //Note: we keep track of our intent to play instead of querying video.isPlaying,
             //  which may return false while it is buffering, but we want the buttons to
             //  show that as far as the user is concerned, it is in 'play' mode (either playing
             //  or about to play)
             that.isPlaying = true;
+            //go full screen if we are not already fullscreen
+            if (Util.isAndroid() && ! that.isFullScreen) {
+                that.fullScreen();
+            }
             // Play the video
             that.video.play();
+
         } else {
             that.isPlaying = false;
             // Pause the video
             that.video.pause();
         }
-       that.setVideoUIState();
+        that.setVideoUIState();
 
-    });
+    }
+
+    // Event listener for the play/pause buttons
+    playButton.addEventListener("click", clickPlay);
+
+    if (this.playMiddleButton) {
+        this.playMiddleButton.addEventListener("click", clickPlay);
+    }
 
     // Event listener for the mute button
     muteButton.addEventListener("click", function() {
@@ -196,13 +222,13 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         //calculate drag position
         //and update video currenttime
         //as well as progress bar
-        var maxduration = video.duration;
+        var maxduration = that.video.duration;
         var position = x - (that.progressBar.offsetParent.offsetLeft + that.progressBar.offsetLeft);
         var percentage = 100 * position / that.progressBar.offsetWidth;
-        if(percentage > 100) {
+        if (percentage > 100) {
             percentage = 100;
         }
-        if(percentage < 0) {
+        if (percentage < 0) {
             percentage = 0;
         }
         that.timeBar.style.width = percentage + '%';
@@ -244,6 +270,14 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     });
 }
 
+WEVR.Player.prototype.play = function() {
+    this.isPlaying = true;
+
+    // Play the video
+    this.video.play();
+    this.setVideoUIState();
+}
+
 // Positioning logic to center the playback controls
 WEVR.Player.prototype.positionControls = function(){
 
@@ -254,6 +288,18 @@ WEVR.Player.prototype.positionControls = function(){
     var cwidth = controls.offsetWidth;
     var left = (width - cwidth) / 2;
     controls.style.left = left + "px";
+
+    //centered play button
+    var centeredPlayButton = document.getElementById("centered_play_button");
+    var pwidth = 100;
+    left = (width - pwidth) / 2;
+    centeredPlayButton.style.left = left + "px";
+    var height = this.container.offsetHeight;
+    var pheight = 100;
+    var top = (height - pheight) / 2;
+    centeredPlayButton.style.top = top + "px";
+
+
 }
 
 WEVR.Player.prototype.setVideoUIState = function(){
@@ -261,6 +307,10 @@ WEVR.Player.prototype.setVideoUIState = function(){
      if (this.isPlaying == true) {
         this.playButtonIcon.classList.add('icon-pause');
          this.playButtonIcon.classList.remove('icon-play');
+         if (this.playMiddleButton){
+             this.playMiddleButton.style.display = "none";
+         }
+
     } else {
          this.playButtonIcon.classList.add('icon-play');
          this.playButtonIcon.classList.remove('icon-pause');
@@ -313,12 +363,12 @@ WEVR.Player.prototype.present = function() {
 
 WEVR.Player.prototype.refreshSize = function() {
 
-	var fullWidth = this.fullscreen ? window.innerWidth : this.container.clientWidth,
-        fullHeight = this.fullscreen ? window.innerHeight : this.container.clientHeight;
+	var fullWidth = this.isFullScreen ? window.innerWidth : this.container.clientWidth,
+        fullHeight = this.isFullScreen ? window.innerHeight : this.container.clientHeight;
 
 	this.renderer.setSize(fullWidth, fullHeight);
 
-    if (this.fullscreen) {
+    if (this.isFullScreen) {
         this.container.style.left = this.container.style.top = 0;
     }
 }
@@ -327,27 +377,40 @@ WEVR.Player.prototype.fullScreen = function() {
 
     var canvas = this.container.parentElement;
 
-    if (canvas.requestFullscreen) {
-        canvas.requestFullscreen();
-    } else if (canvas.mozRequestFullScreen) {
-        canvas.mozRequestFullScreen(); // Firefox
-    } else if (canvas.webkitRequestFullscreen) {
-        canvas.webkitRequestFullscreen(); // Chrome and Safari
+    if (! this.isFullScreen){
+        if (canvas.requestFullscreen) {
+            canvas.requestFullscreen();
+        } else if (canvas.mozRequestFullScreen) {
+            canvas.mozRequestFullScreen(); // Firefox
+        } else if (canvas.webkitRequestFullscreen) {
+            canvas.webkitRequestFullscreen(); // Chrome and Safari
+        }
+        if (!this.isPlaying) {
+            this.play();
+        }
+
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if ( document.mozCancelFullScreen ) {
+            document.mozCancelFullScreen();
+        } else {
+            document.webkitExitFullscreen();
+        }
     }
 }
 
 WEVR.Player.prototype.onFullScreenChanged = function() {
 
     if ( !document.mozFullscreenElement && !document.webkitFullscreenElement ) {
-        this.fullscreen = false;
+        this.isFullScreen = false;
     }
     else {
-        this.fullscreen = true;
+        this.isFullScreen = true;
     }
 
-    if (this.fullscreen) {
-        this.refreshSize();
-    }
+    this.refreshSize();
+
 }
 
 //Utils
