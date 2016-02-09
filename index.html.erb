@@ -5,33 +5,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<script>
-	var VIDEO_URL = "<%=@url%>";
-</script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<script>
+		var VIDEO_URL = "<%=@url%>";
+	</script>
+    <link rel="stylesheet" href="/xassets/vendor/webplayer/css/styles.css" />
 <title>Wevr Player</title>
-<link rel="stylesheet" href="./css/styles.css" />
 </head>
 <body>
 
-	<div id="container"></div>
+<div id="container"></div>
 
-    <!-- N.B.: skip caption for now, TBD. --TP
+<!-- N.B.: skip caption for now, TBD. --TP
 
-	<div id="caption_label" class="caption">Prometheus</div>
-	-->
+<div id="caption_label" class="caption">Prometheus</div>
+-->
 
-	<div id="player_controls" class="control"></div>
+<div id="centered_play_button" class="centerControl"></div>
+<div id="player_controls" class="control"></div>
 
 
-	<script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
-	<script src="/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js"></script>
-	<script src="/xassets/vendor/webplayer/libs/requestAnimationFrame/RequestAnimationFrame.js"></script>
-	<script src="/xassets/vendor/webplayer/js/wevr.js?v01"></script>
-	<script src="/xassets/vendor/webplayer/js/player.j?v01"></script>
-    <script src="/xassets/vendor/webplayer/js/app.js?v01"></script>
+    <script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
+    <script src="/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js"></script>
+    <script src="/xassets/vendor/webplayer/libs/requestAnimationFrame/RequestAnimationFrame.js"></script>
+    <script src="/xassets/vendor/webplayer/js/wevr.js?v02"></script>
+    <script src="/xassets/vendor/webplayer/js/player.js?v02"></script>
+    <script src="/xassets/vendor/webplayer/js/app.js?v02"></script>
 
 
 
 </body>
 </html>
+
