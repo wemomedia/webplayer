@@ -50,11 +50,15 @@ WEVR.Player.prototype.initScene = function() {
     var initialPlayState =false;
     this.isPlaying =  initialPlayState;
 
+    var video = document.getElementById('video');
+
 	// Create a video texture for playing the movie
-    var video = document.createElement('video');
+    /*var video = document.createElement('video');
     video.autoplay = false;
+    video.crossOrigin = "anonymous";*/
+
     video.src = this.src;
-    video.crossOrigin = "anonymous";
+
     if (Util.isIOS()){
         //TODO: not sure why the below is failing on iOS Safari
         // if (video.hasOwnProperty("webkitPlaysinline")) { //iOS in case it is added to the homescreen and is navigator.standalone
@@ -64,12 +68,14 @@ WEVR.Player.prototype.initScene = function() {
     this.video = video;
     this.videoTime = 0;
 
-    var texture = new THREE.VideoTexture( video );
-	texture.minFilter = THREE.LinearFilter;
-	texture.magFilter = THREE.LinearFilter;
-	texture.format = THREE.RGBFormat;
+    //var texture = new THREE.VideoTexture( video );
+    this.texture = new THREE.Texture( this.video );
+    this.texture.generateMipmaps = false;
+    this.texture.minFilter = THREE.LinearFilter;
+    this.texture.magFilter = THREE.LinearFilter;
+    this.texture.format = THREE.RGBFormat;
 
-    var material = new THREE.MeshBasicMaterial({ map: texture, side:THREE.DoubleSide });
+    var material = new THREE.MeshBasicMaterial({ map: this.texture, side:THREE.DoubleSide });
 
     // Create the sky sphere geometry
     var geometry = new THREE.SphereGeometry(10, 32, 32);
@@ -369,15 +375,20 @@ WEVR.Player.prototype.run = function(time) {
 	var that = this;
     if (  Util.isIOS() ){
 
-        /*var updatedTime = new Date();
-        if (this.isPlaying) {
-            that.video.currentTime = this.video.currentTime + (updatedTime.valueOf()-this.currentTime.valueOf())/1000;
-            var currTime = this.video.currentTime;
-
+        if (this.video.webkitDisplayingFullscreen) {
+            this.video.webkitExitFullscreen();
         }
-        this.currentTime = new Date();*/
-    }
+        var updatedTime = new Date();
+         if (this.isPlaying) {
+            this.video.currentTime = this.video.currentTime + (updatedTime.valueOf()-this.currentTime.valueOf())/1000;
+             var currTime = this.video.currentTime;
+         }
+         this.currentTime = new Date();
 
+    }
+    if( this.video.readyState === this.video.HAVE_ENOUGH_DATA ){
+        this.texture.needsUpdate = true;
+    }
     window.requestAnimationFrame(function(time) {
         that.run(time);
     });
