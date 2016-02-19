@@ -7,14 +7,19 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<script>
+	<meta name="apple-mobile-web-app-capable"  content="yes"   />
+    <meta  name="apple-mobile-web-app-status-bar-style"  content="black" />
+    <script>
 		var VIDEO_URL = "<%=@url%>";
 	</script>
+    <title>Wevr Player</title>
     <link rel="stylesheet" href="/xassets/vendor/webplayer/css/styles.css" />
-<title>Wevr Player</title>
+
 </head>
 <body>
-
+<div style="display:none">
+    <video id="video"   preload="auto" crossorigin="anonymous" webkit-playsinline ></video>
+</div>
 <div id="container"></div>
 
 <!-- N.B.: skip caption for now, TBD. --TP
@@ -29,10 +34,9 @@
     <script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
     <script src="/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js"></script>
     <script src="/xassets/vendor/webplayer/libs/requestAnimationFrame/RequestAnimationFrame.js"></script>
-    <script src="/xassets/vendor/webplayer/js/wevr.js?v02"></script>
-    <script src="/xassets/vendor/webplayer/js/player.js?v02"></script>
-    <script src="/xassets/vendor/webplayer/js/app.js?v02"></script>
-
+    <script src="/xassets/vendor/webplayer/js/wevr.js?v04"></script>
+    <script src="/xassets/vendor/webplayer/js/player.js?v04"></script>
+    <script src="/xassets/vendor/webplayer/js/app.js?v04"></script>
 
 
 </body>

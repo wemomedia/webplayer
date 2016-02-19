@@ -35,8 +35,8 @@ window.onload = function() {
 
     player.createDOMPlayerControls();
 
-    if (! Util.isAndroid()) {
-        player.play();
+    if (! (Util.isAndroid() || Util.isIOS() ) ) {
+       player.play();
     }
     player.setVideoUIState();
 
