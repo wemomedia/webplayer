@@ -1,12 +1,12 @@
 body {
     margin: 0px;
-    background-color: #000000;
-    overflow: hidden;
+    background-color: #fff;
+
 }
 
 #container {
     width:100%;
-    height:100%;
+   /* height:100%;*/
     position:absolute;
     border:none;
     overflow:hidden;
@@ -14,7 +14,13 @@ body {
 
 
 * { box-sizing: border-box; }
-html { width: 100%; height: 100%; overflow: hidden; background: #1f323e; background: radial-gradient(80% 0%, ellipse cover, rgba(66,97,104,1) 0%,rgba(49,67,74,.1) 100%), radial-gradient(20% 100%, ellipse cover, rgba(8,13,17,1) 0%,rgba(36,58,67,1) 100%); }
+
+html {
+    width: 100%;
+    height: 100%;
+    color: black;
+    background: #fff;
+}
 
 /* video container */
 .videoContainer{
@@ -22,7 +28,7 @@ html { width: 100%; height: 100%; overflow: hidden; background: #1f323e; backgro
     height:163px;
     position:absolute;
     overflow:hidden;
-    background:#fff;
+    background:#000;
     color:#ccc;
     border-radius: 6px;
     border: 1px solid rgba(0,0,0,0.8);
@@ -69,7 +75,7 @@ html { width: 100%; height: 100%; overflow: hidden; background: #1f323e; backgro
     float:left;
     width:34px;
     height:30px;
-    padding:5px;
+   /* padding:5px;*/
     background: rgba(0,0,0,0.5);
     cursor:pointer;
     border-radius: 6px 0 0 6px;
@@ -77,18 +83,12 @@ html { width: 100%; height: 100%; overflow: hidden; background: #1f323e; backgro
     box-shadow: inset 0 0 1px rgba(255,255,255,0.5);
 }
 .control .icon-play{
-    background:url(../images/vp_sprite.png) no-repeat -11px 0;
-    width: 6px;
-    height: 9px;
     display: block;
     margin: 4px 0 0 8px;
 }
 .control .icon-pause{
-    background:url(../images/vp_sprite.png) no-repeat -34px -1px;
-    width: 8px;
-    height: 9px;
     display: block;
-    margin: 4px 0 0 8px;
+    margin: 8px 0 0 9px;
 }
 .control .selected{
     font-size:15px;
@@ -105,15 +105,10 @@ html { width: 100%; height: 100%; overflow: hidden; background: #1f323e; backgro
     cursor: pointer;
 }
 .control .icon-sound {
-    background:url(../images/vp_sprite.png) no-repeat -19px 0;
-    width: 13px;
-    height: 10px;
     display: block;
-    margin: 8px 0 0 8px;
+    margin: 2px 0 0 4px;
 }
-.control .muted.icon-sound {
-    width: 7px !important;
-}
+
 .control .btnFS{
     width: 30px;
     height: 30px;
@@ -123,15 +118,15 @@ html { width: 100%; height: 100%; overflow: hidden; background: #1f323e; backgro
     border: 1px solid rgba(0,0,0,0.7);
     border-left: none;
     box-shadow: inset 0 0 1px rgba(255,255,255,0.5);
+}
 
-}
+
 .control .icon-fullscreen {
-    background:url(../images/vp_sprite.png) no-repeat 0 0;
-    width: 10px;
-    height: 10px;
     display: block;
-    margin: 8px 0 0 9px;
+    margin: 6px 0 0 7px;
 }
+
+
 
 /* PROGRESS BAR CSS */
 /* Progress bar */
@@ -252,3 +247,4 @@ html { width: 100%; height: 100%; overflow: hidden; background: #1f323e; backgro
 .mobileScale {
     transform: scale(2, 2);
 }
+
