@@ -10,35 +10,50 @@
 	<meta name="apple-mobile-web-app-capable"  content="yes"   />
     <meta  name="apple-mobile-web-app-status-bar-style"  content="black" />
     <script>
-		var VIDEO_URL = "<%=@url%>";
-	</script>
+    		var VIDEO_URL = "<%=@url%>";
+            var VIDEO_OPTIONS=<%=raw(@urls.to_json)%>;
+            VIDEO_URL =VIDEO_OPTIONS.low;
+
+             var svgPath = "/xassets/vendor/webplayer/images/";
+    </script>
     <title>Wevr Player</title>
-    <link rel="stylesheet" href="/xassets/vendor/webplayer/css/styles.css" />
+     <link rel="stylesheet" href="/xassets/vendor/webplayer/css/styles.css" />
 
 </head>
 <body>
-<div style="display:none">
-    <video id="video"   preload="auto" crossorigin="anonymous" webkit-playsinline ></video>
-</div>
-<div id="container"></div>
+    <div style="display:none">
+        <video id="video"   preload="auto" crossorigin="anonymous" webkit-playsinline ></video>
+    </div>
+    <div id="iOSscrollerDivTop" style="display:none" >
+        <p >Scroll the window down to center the video in the midddle of the view.</p>
+        <image  height="20"/>
+    </div>
+    <div id="container">
+        <div id="centered_play_button" class="centerControl"></div>
+        <div id="player_controls" class="control"></div>
+    </div>
 
-<!-- N.B.: skip caption for now, TBD. --TP
+    <!-- N.B.: skip caption for now, TBD. --TP
 
-<div id="caption_label" class="caption">Prometheus</div>
--->
-
-<div id="centered_play_button" class="centerControl"></div>
-<div id="player_controls" class="control"></div>
+    <div id="caption_label" class="caption">Prometheus</div>
+    -->
 
 
-    <script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
-    <script src="/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js"></script>
-    <script src="/xassets/vendor/webplayer/libs/requestAnimationFrame/RequestAnimationFrame.js"></script>
-    <script src="/xassets/vendor/webplayer/js/wevr.js?v04"></script>
-    <script src="/xassets/vendor/webplayer/js/player.js?v04"></script>
-    <script src="/xassets/vendor/webplayer/js/app.js?v04"></script>
+    <div id="iOSscrollerDiv" style="display:none" >
+        <image id="scrollInducer" height="50"/>
+        <p >Scroll the window up to center the video in the midddle of the view.</p>
+        <image height="100"/>
+    </div>
+
+ <script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
+ <script src="/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js"></script>
+ <script src="/xassets/vendor/webplayer/libs/requestAnimationFrame/RequestAnimationFrame.js"></script>
+ <script src="/xassets/vendor/webplayer/js/wevr.js?v05"></script>
+ <script src="/xassets/vendor/webplayer/js/player.js?v05"></script>
+ <script src="/xassets/vendor/webplayer/js/app.js?v05"></script>
 
 
 </body>
 </html>
+
 

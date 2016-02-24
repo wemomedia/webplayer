@@ -16,7 +16,7 @@ WEVR.Player.prototype.initThreeJS = function() {
 	// Create the Three.js renderer and attach it to our container
     this.renderer = new THREE.WebGLRenderer( { antialias: true} );
 
-    this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+    this.renderer.setSize(this.container.clientWidth, window.innerHeight);
 
     // Set the viewport size
     this.container.appendChild(this.renderer.domElement);
@@ -52,7 +52,7 @@ WEVR.Player.prototype.initScene = function() {
 
     var video = document.getElementById('video');
 
-	// Create a video texture for playing the movie
+  	// Create a video texture for playing the movie
     /*var video = document.createElement('video');
     video.autoplay = false;
     video.crossOrigin = "anonymous";*/
@@ -113,6 +113,10 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
     this.playButtonIcon = document.createElement("span");
     this.playButtonIcon.classList.add('icon-play');
+    this.playImage =this.loadIcon("play.svg", 30,30) ;
+    this.playButtonIcon.appendChild(this.playImage);
+    this.pauseImage =this.loadIcon("pause.svg", 25,25) ;
+    this.playButtonIcon.appendChild(this.pauseImage);
     playButton.appendChild(this.playButtonIcon);
     playBtmControl.appendChild(playButton);
 
@@ -124,8 +128,10 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     progress.classList.add("progress");
     if (Util.isAndroid() || Util.isIOS()) {
         progress.classList.add("progressMobile");
+        this.progressBarWidth = 50;
     } else {
         progress.classList.add("progressDesktop");
+        this.progressBarWidth = 200;
     }
 
     this.progressBar.appendChild(progress);
@@ -143,6 +149,11 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     muteButton.title = "Mute/Unmute sound";
     var muteButtonIcon = document.createElement("span");
     muteButtonIcon.classList.add("icon-sound");
+    this.speakerImage =this.loadIcon("speaker.svg", 22,22) ;
+    muteButtonIcon.appendChild(this.speakerImage);
+    this.muteImage =this.loadIcon("mute.svg", 22,22) ;
+    muteButtonIcon.appendChild(this.muteImage);
+    this.muteImage.style.display = "none";
     muteButton.appendChild(muteButtonIcon);
     playBtmControl.appendChild(muteButton);
 
@@ -153,6 +164,8 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     fullScreenButton.title = "Switch to full screen";
     var fullScreenButtonIcon = document.createElement("span");
     fullScreenButtonIcon.classList.add("icon-fullscreen");
+    var image =this.loadIcon("fullscreen.svg", 15,15) ;
+    fullScreenButtonIcon.appendChild(image);
     fullScreenButton.appendChild(fullScreenButtonIcon);
     playBtmControl.appendChild(fullScreenButton);
 
@@ -211,14 +224,14 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
             // Mute the video
             that.video.muted = true;
 
-            var muteelts = muteButton.getElementsByClassName('icon-sound');
-            muteelts[0].classList.add('muted');
+            that.speakerImage.style.display = "none";
+            that.muteImage.style.display = "block";
         } else {
             // Unmute the video
             that.video.muted = false;
 
-            var muteelts = muteButton.getElementsByClassName('icon-sound');
-            muteelts[0].classList.remove('muted');
+            that.speakerImage.style.display = "block";
+            that.muteImage.style.display = "none";
         }
     });
 
@@ -245,8 +258,14 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         //and update video currenttime
         //as well as progress bar
         var maxduration = that.video.duration;
-        var position = x - (that.progressBar.offsetParent.offsetLeft + that.progressBar.offsetLeft);
-        var percentage = 100 * position / that.progressBar.offsetWidth;
+        if (Util.isAndroid() || Util.isIOS()) { //using scaling factor messes with the browser's reporting of offset  //TODO: not not iPAD
+            var timeBarStartX = that.progressBar.offsetParent.offsetLeft ;//not sure why iOS reports offsetLeft so differently
+            var timeBarEndX  =  that.progressBarWidth*2;
+        } else {
+            var timeBarStartX = that.progressBar.offsetParent.offsetLeft + that.progressBar.offsetLeft + 10;//padding is 10px
+            var timeBarEndX  =  that.progressBarWidth;
+        }
+        var percentage = 100 * ( x - timeBarStartX) / timeBarEndX;
         if (percentage > 100) {
             percentage = 100;
         }
@@ -266,7 +285,8 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         /* N.B.: OLD -- TP
          seekBar.value = value;
          */
-        that.timeBar.style.width = 240 * (that.video.currentTime / that.video.duration) + "px";
+
+        that.timeBar.style.width = that.progressBarWidth * (that.video.currentTime / that.video.duration) + "px";
     });
 
     // Timer to keep the buffer bar up to date
@@ -287,10 +307,16 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
 
     // Event listener for the full-screen button
-    fullScreenButton.addEventListener("click", function() {
-        that.fullScreen();
-        that.setVideoUIState();
-    });
+   // if (fullScreenButton) {
+        fullScreenButton.addEventListener("click", function () {
+            if (Util.isIOS()){
+                alert('To go full-screen on iPhones, scroll the page up or down to center the video player."')
+                return;
+            }
+            that.fullScreen();
+            that.setVideoUIState();
+        });
+  //  }
 
     var container = document.getElementById("container");
     container.addEventListener( "click" , function() {
@@ -300,6 +326,21 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         that.positionControls();
     })
 
+}
+
+WEVR.Player.prototype.loadIcon = function(source, width, height) {
+    var canvas = document.createElement('canvas');
+
+    var ctx = canvas.getContext('2d');
+
+    var img = new Image();
+    img.onload = function () {
+        ctx.drawImage(img, 0, 0, width, height);
+    }
+    img.src = svgPath + source;
+    img.width = width;
+    img.height = height;
+    return img;
 }
 
 WEVR.Player.prototype.play = function() {
@@ -320,7 +361,11 @@ WEVR.Player.prototype.positionControls = function(){
     var cwidth = controls.offsetWidth;
     var left = width  / 2 - cwidth/2;
     controls.style.left = left + "px";
-    controls.style.bottom = "20px";
+    if (Util.isIOS()) { //if the user touches too close to the bottom of the screen, then the browser chrome appears.
+        controls.style.bottom = "50px";
+    }else {
+        controls.style.bottom = "20px";
+    }
 
     //centered play button
     var centeredPlayButton = document.getElementById("centered_play_button");
@@ -332,6 +377,12 @@ WEVR.Player.prototype.positionControls = function(){
     var top = (height - pheight) / 2;
     centeredPlayButton.style.top = top + "px";
 
+    var scrollInducer = document.getElementById("scrollInducer");
+    scrollInducer.height = this.container.offsetHeight +20 ;
+    if (scrollText) {
+        var scrollText = document.getElementById("scrollText");
+        scrollText.height = 300;
+    }
 
 }
 
@@ -343,8 +394,10 @@ WEVR.Player.prototype.setVideoUIState = function(){
     }
 
      if (this.isPlaying == true) {
-         this.playButtonIcon.classList.add('icon-pause');
-         this.playButtonIcon.classList.remove('icon-play');
+         /*this.playButtonIcon.classList.add('icon-pause');
+         this.playButtonIcon.classList.remove('icon-play');*/
+         this.playImage.style.display = "none";
+         this.pauseImage.style.display = "block";
          if (this.playMiddleButton){
              this.playMiddleButton.style.display = "none";
          }
@@ -355,8 +408,10 @@ WEVR.Player.prototype.setVideoUIState = function(){
          }, 5000);
 
     } else {
-         this.playButtonIcon.classList.add('icon-play');
-         this.playButtonIcon.classList.remove('icon-pause');
+         /*this.playButtonIcon.classList.add('icon-play');
+         this.playButtonIcon.classList.remove('icon-pause');*/
+         this.playImage.style.display = "block";
+         this.pauseImage.style.display = "none";
          var playerControls = document.getElementById("player_controls");
          playerControls.style.display = "block";
     }
@@ -428,7 +483,7 @@ WEVR.Player.prototype.refreshSize = function() {
 	var fullWidth = this.isFullScreen ? window.innerWidth : this.container.clientWidth,
         fullHeight = this.isFullScreen ? window.innerHeight : this.container.clientHeight;
 
-	this.renderer.setSize(fullWidth, fullHeight);
+	this.renderer.setSize(fullWidth, window.innerHeight);
 
     if (this.isFullScreen) {
         this.container.style.left = this.container.style.top = 0;
@@ -488,6 +543,19 @@ Util.isAndroid = function() {
     return returnVal
 };
 
+Util.isMobile = function(){
+    return Util.isIOS() || Util.isAndroid();
+}
+
+Util.getScreenWidth = function() {
+    return Math.max(window.screen.width, window.screen.height) *
+        window.devicePixelRatio;
+};
+
+Util.getScreenHeight = function() {
+    return Math.min(window.screen.width, window.screen.height) *
+        window.devicePixelRatio;
+};
 
 Util.isIFrame = function() {
     try {

@@ -9,32 +9,51 @@
         //http://localhost/webplayer/player.html?url=https://i.wevr.com/uploads/files/4b967db9-8bb8-4d11-92ba-e8876c02b064/encountertest_01082015.mp4
 
         var VIDEO_URL = '/360videos/encountertest_01082015.mp4';
+        var VIDEO_OPTIONS={
+            "hi":'/360videos/encountertest_01082015.mp4',
+            "med":'/360videos/encountertest_01082015.mp4',
+            "low":'/360videos/encountertest_01082015.mp4'
+        };
+        VIDEO_URL =VIDEO_OPTIONS.low;
+
+        var svgPath = "/xassets/vendor/webplayer/images/";
+
     </script>
     <title>Wevr Player</title>
-    <link rel="stylesheet" href="/xassets/vendor/webplayer/css/styles.css" />
+     <link rel="stylesheet" href="/xassets/vendor/webplayer/css/styles.css" />
 
 </head>
 <body>
-<div style="display:none">
-    <video id="video"   preload="auto" crossorigin="anonymous" webkit-playsinline ></video>
-</div>
-<div id="container"></div>
+    <div style="display:none">
+        <video id="video"   preload="auto" crossorigin="anonymous" webkit-playsinline ></video>
+    </div>
+    <div id="iOSscrollerDivTop" style="display:none" >
+        <p >Scroll the window down to center the video in the midddle of the view.</p>
+        <image  height="20"/>
+    </div>
+    <div id="container">
+        <div id="centered_play_button" class="centerControl"></div>
+        <div id="player_controls" class="control"></div>
+    </div>
 
-<!-- N.B.: skip caption for now, TBD. --TP
+    <!-- N.B.: skip caption for now, TBD. --TP
 
-<div id="caption_label" class="caption">Prometheus</div>
--->
-
-<div id="centered_play_button" class="centerControl"></div>
-<div id="player_controls" class="control"></div>
+    <div id="caption_label" class="caption">Prometheus</div>
+    -->
 
 
-    <script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
-    <script src="/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js"></script>
-    <script src="/xassets/vendor/webplayer/libs/requestAnimationFrame/RequestAnimationFrame.js"></script>
-    <script src="/xassets/vendor/webplayer/js/wevr.js?v04"></script>
-    <script src="/xassets/vendor/webplayer/js/player.js?v04"></script>
-    <script src="/xassets/vendor/webplayer/js/app.js?v04"></script>
+    <div id="iOSscrollerDiv" style="display:none" >
+        <image id="scrollInducer" height="50"/>
+        <p >Scroll the window up to center the video in the midddle of the view.</p>
+        <image height="100"/>
+    </div>
+
+ <script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
+ <script src="/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js"></script>
+ <script src="/xassets/vendor/webplayer/libs/requestAnimationFrame/RequestAnimationFrame.js"></script>
+ <script src="/xassets/vendor/webplayer/js/wevr.js?v05"></script>
+ <script src="/xassets/vendor/webplayer/js/player.js?v05"></script>
+ <script src="/xassets/vendor/webplayer/js/app.js?v05"></script>
 
 
 </body>
