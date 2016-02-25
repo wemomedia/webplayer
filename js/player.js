@@ -57,6 +57,7 @@ WEVR.Player.prototype.initScene = function() {
     video.autoplay = false;
     video.crossOrigin = "anonymous";*/
 
+    this.isInitialBuffering = true;
     video.src = this.src;
 
     if (Util.isIOS()){
@@ -171,8 +172,8 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
     playerControls.appendChild(playBtmControl);
 
-
-    if (Util.isAndroid() || Util.isIOS() ) {
+// I made the lower buttons so big, I don't think that they are
+  /*  if (Util.isAndroid() || Util.isIOS() ) {
         //create centered Play Button
         this.playMiddleButton = document.createElement("div");
         this.playMiddleButton.classList.add("playMiddleButton", "btn");
@@ -185,7 +186,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         var centeredPlayButton = document.getElementById("centered_play_button");
 
         centeredPlayButton.appendChild(this.playMiddleButton);
-    }
+    }*/
     var that = this;
 
     var clickPlay =function() {
@@ -198,6 +199,10 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
             //go full screen if we are not already fullscreen
             if (Util.isAndroid() && ! that.isFullScreen) {
                 that.fullScreen();
+            }
+            //TODO: on Edge, don't play unless the video is properly buffered
+            if (Util.isMSEdge()){
+
             }
             // Play the video
             that.video.play();
@@ -302,11 +307,19 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     };
 
     this.video.addEventListener("canplay", function() {
+
         setTimeout(startBuffer, 150);
+
     });
 
+    this.video.addEventListener("canplaythrough", function () {
+        that.isInitialBuffering = false;
+        that.setVideoUIState();
+    }, false);
 
-    // Event listener for the full-screen button
+    // Event listener for the full-scree
+    //
+    // n button
    // if (fullScreenButton) {
         fullScreenButton.addEventListener("click", function () {
             if (Util.isIOS()){
@@ -393,7 +406,12 @@ WEVR.Player.prototype.setVideoUIState = function(){
         this.scrubberTimeout = null;
     }
 
-     if (this.isPlaying == true) {
+    if (this.isInitialBuffering){
+        this.playImage.style.display = "none"; //TODO create a waiting icon
+        this.pauseImage.style.display = "none";
+        return;
+    }
+     if (this.isPlaying ) {
          /*this.playButtonIcon.classList.add('icon-pause');
          this.playButtonIcon.classList.remove('icon-play');*/
          this.playImage.style.display = "none";
@@ -565,4 +583,12 @@ Util.isIFrame = function() {
     }
 };
 
+Util.isMSEdge = function() {
+   return new RegExp("Edge").exec(navigator.userAgent) != null;
+}
+
+Util.isIE = function(){
+   return ((navigator.appName == 'Microsoft Internet Explorer') ||
+        ((navigator.appName == 'Mozilla') && (new RegExp("Trident").exec(navigator.userAgent) != null)));
+}
 

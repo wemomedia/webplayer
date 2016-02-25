@@ -13,6 +13,11 @@
 
 window.onload = function() {
 
+   if ( Util.isIE( )){
+        document.getElementById("notSupportedMessage").style.display= "block";
+        return;
+    }
+
     /* Steve, right at the top. */
     var str = window.location.search;
     var params = {};
@@ -47,7 +52,9 @@ window.onload = function() {
 
     player.createDOMPlayerControls();
 
-    if (! (Util.isAndroid() || Util.isIOS() ) ) {
+    //Mobile won't play back without a user interaction
+    //Edge iwll start to playback, even though it hasn't buffered properly yet
+    if (! (Util.isAndroid() || Util.isIOS()) &&  !Util.isMSEdge()  ) {
        player.play();
     }
     player.setVideoUIState();
