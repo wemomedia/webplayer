@@ -54,8 +54,8 @@ WEVR.Player.prototype.initScene = function() {
 
   	// Create a video texture for playing the movie
     /*var video = document.createElement('video');
-    video.autoplay = false;
-    video.crossOrigin = "anonymous";*/
+    video.autoplay = false;*/
+    video.crossOrigin = "anonymous";
 
     this.isInitialBuffering = true;
     video.src = this.src;
@@ -187,6 +187,22 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
         centeredPlayButton.appendChild(this.playMiddleButton);
     }*/
+
+    //create centered Replay Button
+    this.replayMiddleButton = document.createElement("div");
+    this.replayMiddleButton.style.display = "none";
+    this.replayMiddleButton.classList.add("replayMiddleButton", "btn");
+    this.replayMiddleButton.title = "Replay video";
+    this.replayMiddleButton.setAttribute("id", "replay_middle_button");
+
+    var replayMiddleButtonIcon = document.createElement("span");
+    replayMiddleButtonIcon.classList.add('icon-replay-middle');
+    image =this.loadIcon("replay.svg", 90,90) ;
+    replayMiddleButtonIcon.appendChild(image);
+    this.replayMiddleButton.appendChild(replayMiddleButtonIcon);
+    var centeredPlayButton = document.getElementById("centered_play_button");
+    centeredPlayButton.appendChild(this.replayMiddleButton);
+
     var that = this;
 
     var clickPlay =function() {
@@ -200,10 +216,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
             if (Util.isAndroid() && ! that.isFullScreen) {
                 that.fullScreen();
             }
-            //TODO: on Edge, don't play unless the video is properly buffered
-            if (Util.isMSEdge()){
 
-            }
             // Play the video
             that.video.play();
 
@@ -216,11 +229,23 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
     }
 
+    var clickReplay = function(){
+        that.video.currentTime = 0;
+        that.isPlaying = true;
+        //go full screen if we are not already fullscreen
+        if (Util.isAndroid() && ! that.isFullScreen) {
+            that.fullScreen();
+        }
+
+        // Play the video
+        that.video.play();
+    }
+
     // Event listener for the play/pause buttons
     playButton.addEventListener("click", clickPlay);
 
-    if (this.playMiddleButton) {
-        this.playMiddleButton.addEventListener("click", clickPlay);
+    if (this.replayMiddleButton) {
+        this.replayMiddleButton.addEventListener("click", clickReplay);
     }
 
     // Event listener for the mute button
@@ -277,20 +302,19 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         if (percentage < 0) {
             percentage = 0;
         }
+        if (percentage > 99) {
+            that.setVideoUIState();
+        }
         that.timeBar.style.width = percentage + '%';
         that.video.currentTime = maxduration * percentage / 100;
     };
 
     // Update the scrubber bar as the video plays
     this.video.addEventListener("timeupdate", function() {
-        // Calculate the slider value
-        var value = (100 / that.video.duration) * that.video.currentTime;
 
-        // Update the slider value
-        /* N.B.: OLD -- TP
-         seekBar.value = value;
-         */
-
+        if (that.video.currentTime > that.video.duration - 1){ //within 1 sec of the end
+            that.setVideoUIState();
+        }
         that.timeBar.style.width = that.progressBarWidth * (that.video.currentTime / that.video.duration) + "px";
     });
 
@@ -411,13 +435,19 @@ WEVR.Player.prototype.setVideoUIState = function(){
         this.pauseImage.style.display = "none";
         return;
     }
+    if (this.video.currentTime > this.video.duration - 1){ //we are one second from the end
+        if (this.replayMiddleButton ){
+            this.replayMiddleButton.style.display = "block";
+        }
+        this.isPlaying = false;
+    }
      if (this.isPlaying ) {
          /*this.playButtonIcon.classList.add('icon-pause');
          this.playButtonIcon.classList.remove('icon-play');*/
          this.playImage.style.display = "none";
          this.pauseImage.style.display = "block";
-         if (this.playMiddleButton){
-             this.playMiddleButton.style.display = "none";
+         if (this.replayMiddleButton){
+             this.replayMiddleButton.style.display = "none";
          }
 
          this.scrubberTimeout = setTimeout( function() {
@@ -430,6 +460,7 @@ WEVR.Player.prototype.setVideoUIState = function(){
          this.playButtonIcon.classList.remove('icon-pause');*/
          this.playImage.style.display = "block";
          this.pauseImage.style.display = "none";
+
          var playerControls = document.getElementById("player_controls");
          playerControls.style.display = "block";
     }

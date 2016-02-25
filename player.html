@@ -9,23 +9,45 @@
         //http://localhost/webplayer/player.html?url=https://i.wevr.com/uploads/files/4b967db9-8bb8-4d11-92ba-e8876c02b064/encountertest_01082015.mp4
 
         var VIDEO_URL = '/360videos/encountertest_01082015.mp4';
-        var VIDEO_OPTIONS={
+        /*var VIDEO_OPTIONS={
             "hi":'/360videos/encountertest_01082015.mp4',
             "med":'/360videos/encountertest_01082015.mp4',
             "low":'/360videos/encountertest_01082015.mp4'
+        };*/
+        var VIDEO_OPTIONS={
+           // "hi":"360videos/WAVES_Web_High.mp4",  //https://i.wevr.com/uploads/files/4539c9f1-0f47-4d5b-a8ef-e133d840681a/encountertest_01082015.mp4",
+            "hi":"360videos/TheVisitor_sync_2_WebHigh.mp4",  //https://i.wevr.com/uploads/files/4539c9f1-0f47-4d5b-a8ef-e133d840681a/encountertest_01082015.mp4",
+            "med":"360videos/TheVisitor_sync_2_WebMedium.mp4",
+            "low":"360videos/TheVisitor_sync_2_WebLow.mp4"
         };
-
         VIDEO_URL =VIDEO_OPTIONS.low;
 
-        var svgPath = "/xassets/vendor/webplayer/images/";
+        //var svgPath = "/xassets/vendor/webplayer/images/";
+        var svgPath = "images/";
 
     </script>
-    <title>Wevr Player</title>
-    <link rel="stylesheet" href="/xassets/vendor/webplayer/css/styles.css" />
 
+    <script>
+        function isIFrame() {
+            try {
+                return window.self !== window.top;
+            } catch (e) {
+                return true;
+            }
+        };
+        //if this is an iOS and within an IFrame, then navigate the top window directly to this player, so it can scroll correctly
+        if ( /(iPad|iPhone|iPod)/g.test(navigator.userAgent) && isIFrame()){
+            window.top.location.href =window.location.href;
+        }
+    </script>
+
+    <title>Wevr Player</title>
+    <!--<link rel="stylesheet" href="/xassets/vendor/webplayer/css/styles.css" />-->
+    <link rel="stylesheet" href="css/styles.css" />
 
 </head>
 <body>
+
     <div style="display:none">
         <video id="video"   preload="auto" crossorigin="anonymous" webkit-playsinline ></video>
     </div>
@@ -33,8 +55,8 @@
         <p>This browser doesn't support 360 video playback. Please try another browser.</p>
     </div>
 
-    <div id="iOSscrollerDivTop" style="display:none" >
-        <p >Scroll the window down to center the video in the midddle of the view.</p>
+    <div id="iOSscrollerDivTop" class="iOSMessage" style="display:none" >
+        <p >Scroll the window down to center the video in the middle of the view.</p>
         <img  height="20"/>
     </div>
     <div id="container">
@@ -48,21 +70,32 @@
     -->
 
 
-    <div id="iOSscrollerDiv" style="display:none" >
+    <div id="iOSscrollerDiv" class="iOSMessage" style="display:none" >
         <img id="scrollInducer" height="50"/>
-        <p >Scroll the window up to center the video in the midddle of the view.</p>
+        <p >Scroll the window up to center the video in the middle of the view.</p>
         <img height="100"/>
     </div>
 
-     <script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
+<!--     <script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
      <script src="/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js"></script>
      <script src="/xassets/vendor/webplayer/libs/requestAnimationFrame/RequestAnimationFrame.js"></script>
-     <script src="/xassets/vendor/webplayer/js/wevr.js?v06"></script>
-     <script src="/xassets/vendor/webplayer/js/player.js?v06"></script>
-     <script src="/xassets/vendor/webplayer/js/app.js?v06"></script>
+     <script src="/xassets/vendor/webplayer/js/wevr.js?v05"></script>
+     <script src="/xassets/vendor/webplayer/js/player.js?v05"></script>
+     <script src="/xassets/vendor/webplayer/js/app.js?v05"></script>-->
 
+    <script src="libs/three.js.r73/three.js"></script>
+    <script src="libs/three.js.r73/OrbitControls.js"></script>
+    <script src="libs/requestAnimationFrame/RequestAnimationFrame.js"></script>
+    <script src="js/wevr.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/app.js"></script>
 
-
+    <script>
+        // if (Util.isIOS() && Util.isIFrame() ){
+        if (Util.isIFrame()) {
+            window.open(window.location.href);
+        }
+    </script>
 
 </body>
 </html>

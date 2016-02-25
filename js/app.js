@@ -44,6 +44,7 @@ window.onload = function() {
     // WebGL player/canvas
     var container = document.getElementById("container");
     var src = params.url ? params.url : VIDEO_OPTIONS[getVideoQuality()];
+    //alert("video source: " + src);
     console.log("video source: " + src);
     var player = new WEVR.Player({
         container : container,
@@ -123,6 +124,6 @@ var getVideoQuality= function() {
     } else { //desktop
         quality = "hi";
     }
-   // alert("video quality: " + quality);
+    //alert("video quality: " + quality);
     return quality;
 }
