@@ -54,9 +54,10 @@ WEVR.Player.prototype.initScene = function() {
 
   	// Create a video texture for playing the movie
     /*var video = document.createElement('video');
-    video.autoplay = false;
-    video.crossOrigin = "anonymous";*/
+    video.autoplay = false;*/
+    video.crossOrigin = "anonymous";
 
+    this.isInitialBuffering = true;
     video.src = this.src;
 
     if (Util.isIOS()){
@@ -171,8 +172,8 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
     playerControls.appendChild(playBtmControl);
 
-
-    if (Util.isAndroid() || Util.isIOS() ) {
+// I made the lower buttons so big, I don't think that they are
+  /*  if (Util.isAndroid() || Util.isIOS() ) {
         //create centered Play Button
         this.playMiddleButton = document.createElement("div");
         this.playMiddleButton.classList.add("playMiddleButton", "btn");
@@ -185,7 +186,23 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         var centeredPlayButton = document.getElementById("centered_play_button");
 
         centeredPlayButton.appendChild(this.playMiddleButton);
-    }
+    }*/
+
+    //create centered Replay Button
+    this.replayMiddleButton = document.createElement("div");
+    this.replayMiddleButton.style.display = "none";
+    this.replayMiddleButton.classList.add("replayMiddleButton", "btn");
+    this.replayMiddleButton.title = "Replay video";
+    this.replayMiddleButton.setAttribute("id", "replay_middle_button");
+
+    var replayMiddleButtonIcon = document.createElement("span");
+    replayMiddleButtonIcon.classList.add('icon-replay-middle');
+    image =this.loadIcon("replay.svg", 90,90) ;
+    replayMiddleButtonIcon.appendChild(image);
+    this.replayMiddleButton.appendChild(replayMiddleButtonIcon);
+    var centeredPlayButton = document.getElementById("centered_play_button");
+    centeredPlayButton.appendChild(this.replayMiddleButton);
+
     var that = this;
 
     var clickPlay =function() {
@@ -199,6 +216,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
             if (Util.isAndroid() && ! that.isFullScreen) {
                 that.fullScreen();
             }
+
             // Play the video
             that.video.play();
 
@@ -211,11 +229,23 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
     }
 
+    var clickReplay = function(){
+        that.video.currentTime = 0;
+        that.isPlaying = true;
+        //go full screen if we are not already fullscreen
+        if (Util.isAndroid() && ! that.isFullScreen) {
+            that.fullScreen();
+        }
+
+        // Play the video
+        that.video.play();
+    }
+
     // Event listener for the play/pause buttons
     playButton.addEventListener("click", clickPlay);
 
-    if (this.playMiddleButton) {
-        this.playMiddleButton.addEventListener("click", clickPlay);
+    if (this.replayMiddleButton) {
+        this.replayMiddleButton.addEventListener("click", clickReplay);
     }
 
     // Event listener for the mute button
@@ -272,20 +302,19 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         if (percentage < 0) {
             percentage = 0;
         }
+        if (percentage > 99) {
+            that.setVideoUIState();
+        }
         that.timeBar.style.width = percentage + '%';
         that.video.currentTime = maxduration * percentage / 100;
     };
 
     // Update the scrubber bar as the video plays
     this.video.addEventListener("timeupdate", function() {
-        // Calculate the slider value
-        var value = (100 / that.video.duration) * that.video.currentTime;
 
-        // Update the slider value
-        /* N.B.: OLD -- TP
-         seekBar.value = value;
-         */
-
+        if (that.video.currentTime > that.video.duration - 1){ //within 1 sec of the end
+            that.setVideoUIState();
+        }
         that.timeBar.style.width = that.progressBarWidth * (that.video.currentTime / that.video.duration) + "px";
     });
 
@@ -302,11 +331,19 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     };
 
     this.video.addEventListener("canplay", function() {
+
         setTimeout(startBuffer, 150);
+
     });
 
+    this.video.addEventListener("canplaythrough", function () {
+        that.isInitialBuffering = false;
+        that.setVideoUIState();
+    }, false);
 
-    // Event listener for the full-screen button
+    // Event listener for the full-scree
+    //
+    // n button
    // if (fullScreenButton) {
         fullScreenButton.addEventListener("click", function () {
             if (Util.isIOS()){
@@ -393,13 +430,24 @@ WEVR.Player.prototype.setVideoUIState = function(){
         this.scrubberTimeout = null;
     }
 
-     if (this.isPlaying == true) {
+    if (this.isInitialBuffering){
+        this.playImage.style.display = "none"; //TODO create a waiting icon
+        this.pauseImage.style.display = "none";
+        return;
+    }
+    if (this.video.currentTime > this.video.duration - 1){ //we are one second from the end
+        if (this.replayMiddleButton ){
+            this.replayMiddleButton.style.display = "block";
+        }
+        this.isPlaying = false;
+    }
+     if (this.isPlaying ) {
          /*this.playButtonIcon.classList.add('icon-pause');
          this.playButtonIcon.classList.remove('icon-play');*/
          this.playImage.style.display = "none";
          this.pauseImage.style.display = "block";
-         if (this.playMiddleButton){
-             this.playMiddleButton.style.display = "none";
+         if (this.replayMiddleButton){
+             this.replayMiddleButton.style.display = "none";
          }
 
          this.scrubberTimeout = setTimeout( function() {
@@ -412,6 +460,7 @@ WEVR.Player.prototype.setVideoUIState = function(){
          this.playButtonIcon.classList.remove('icon-pause');*/
          this.playImage.style.display = "block";
          this.pauseImage.style.display = "none";
+
          var playerControls = document.getElementById("player_controls");
          playerControls.style.display = "block";
     }
@@ -565,4 +614,12 @@ Util.isIFrame = function() {
     }
 };
 
+Util.isMSEdge = function() {
+   return new RegExp("Edge").exec(navigator.userAgent) != null;
+}
+
+Util.isIE = function(){
+   return ((navigator.appName == 'Microsoft Internet Explorer') ||
+        ((navigator.appName == 'Mozilla') && (new RegExp("Trident").exec(navigator.userAgent) != null)));
+}
 
