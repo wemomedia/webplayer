@@ -13,7 +13,9 @@
 
 window.onload = function() {
 
-   if ( Util.isIE( )){
+   if ( Util.isIE( ) || Util.isIOS() ){
+        // see TWEB-188
+        // see TWEB-185
         document.getElementById("notSupportedMessage").style.display= "block";
         return;
     }
@@ -29,16 +31,8 @@ window.onload = function() {
         }
     );
 
-    //on IOS, we need to force the window to scroll, so that the upper and lower chrome can be scrolled out of view
-    if (Util.isIOS()) {
-        var iOSscrollerDiv = document.getElementById("iOSscrollerDiv");
-        iOSscrollerDiv.style.display = "block";
-        var iOSscrollerDivTop = document.getElementById("iOSscrollerDivTop");
-        iOSscrollerDivTop.style.display = "block";
+    document.getElementsByTagName("body")[0].style.overflow = "hidden";
 
-    } else {
-        document.getElementsByTagName("body")[0].style.overflow = "hidden";
-    }
 
 
     // WebGL player/canvas
@@ -54,8 +48,8 @@ window.onload = function() {
     player.createDOMPlayerControls();
 
     //Mobile won't play back without a user interaction
-    //Edge iwll start to playback, even though it hasn't buffered properly yet
-    if (! (Util.isAndroid() || Util.isIOS()) &&  !Util.isMSEdge()  ) {
+    //Edge will start to playback, even though it hasn't buffered properly yet
+    if (! (Util.isMobile() ) &&  !Util.isMSEdge()  ) {
        player.play();
     }
     player.setVideoUIState();
@@ -71,59 +65,15 @@ window.onload = function() {
 }
 
 var getVideoQuality= function() {
-    var quality = "low";
+    var quality = "med";
 
     if (Util.isIOS()) {
-
-        var iosPhoneResolutions = [
-            {
-                "type": "iPhone4", //and 4s
-                "res": [640, 960]
-            },
-            {
-                "type": "iPhone5", //and 5s
-                "res": [640, 1136]
-            },
-            {
-                "type": "iPhone6",
-                "res": [750, 1334]
-            },
-            {
-                "type": "iPhone6Plus",
-                "res": [1242, 2208]
-            }
-        ];
-        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        var width = Util.getScreenWidth();
-        var height = Util.getScreenHeight();
-        //alert("width: " +width +", height: " + height);
-        var phoneType = "";
-        iosPhoneResolutions.forEach(function (item, index) {
-            if (item.res[1] == width && item.res[0] == height) {
-                phoneType = item.type;
-            }
-        });
-
-        switch (phoneType) {
-            case "iPhone4":
-                alert("At least an iPhone5 is required to play this demo.");
-                return;
-            case "iPhone5":
-                quality = "low";
-                break;
-            case "iPhone6":
-            case "iPhone6Plus":
-                quality = "med";
-                break;
-            default:
-                quality = "med"; //future iPhones?
-
-        }
+        //removed until iOS is supported
     } else if (Util.isAndroid()) {
         quality = "med";
     } else { //desktop
         quality = "hi";
     }
-    //alert("video quality: " + quality);
+
     return quality;
 }

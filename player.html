@@ -27,19 +27,6 @@
 
     </script>
 
-    <script>
-        function isIFrame() {
-            try {
-                return window.self !== window.top;
-            } catch (e) {
-                return true;
-            }
-        };
-        //if this is an iOS and within an IFrame, then navigate the top window directly to this player, so it can scroll correctly
-        if ( /(iPad|iPhone|iPod)/g.test(navigator.userAgent) && isIFrame()){
-            window.top.location.href =window.location.href;
-        }
-    </script>
 
     <title>Wevr Player</title>
     <!--<link rel="stylesheet" href="/xassets/vendor/webplayer/css/styles.css" />-->
@@ -52,13 +39,10 @@
         <video id="video"   preload="auto" crossorigin="anonymous" webkit-playsinline ></video>
     </div>
     <div id="notSupportedMessage" style="display:none">
-        <p>This browser doesn't support 360 video playback. Please try another browser.</p>
+        <p>Playback on this device is not supported. Please visit wevrtransport.com for a full list of supported platforms and devices.</p>
     </div>
 
-    <div id="iOSscrollerDivTop" class="iOSMessage" style="display:none" >
-        <p >Scroll the window down to center the video in the middle of the view.</p>
-        <img  height="20"/>
-    </div>
+
     <div id="container">
         <div id="centered_play_button" class="centerControl"></div>
         <div id="player_controls" class="control"></div>
@@ -70,11 +54,7 @@
     -->
 
 
-    <div id="iOSscrollerDiv" class="iOSMessage" style="display:none" >
-        <img id="scrollInducer" height="50"/>
-        <p >Scroll the window up to center the video in the middle of the view.</p>
-        <img height="100"/>
-    </div>
+
 
 <!--     <script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
      <script src="/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js"></script>
@@ -90,12 +70,7 @@
     <script src="js/player.js"></script>
     <script src="js/app.js"></script>
 
-    <script>
-        // if (Util.isIOS() && Util.isIFrame() ){
-        if (Util.isIFrame()) {
-            window.open(window.location.href);
-        }
-    </script>
+
 
 </body>
 </html>
