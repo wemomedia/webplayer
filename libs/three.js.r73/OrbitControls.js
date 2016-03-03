@@ -52,7 +52,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	// Set to true to disable this control
 	this.noPan = false;
-	this.keyPanSpeed = 7.0;	// pixels moved per arrow key push
+	this.keyPanSpeed = 6.0;	// pixels moved per arrow key push
 
 	// Set to true to automatically rotate around the target
 	this.autoRotate = false;
@@ -532,23 +532,33 @@ THREE.OrbitControls = function ( object, domElement ) {
 		switch ( event.keyCode ) {
 
 			case scope.keys.UP:
-				scope.pan( 0, scope.keyPanSpeed );
-				scope.update();
+				/*scope.pan( 0, scope.keyPanSpeed );
+				scope.update();*/
+                scope.rotateUp(-scope.keyPanSpeed/20);
 				break;
 
 			case scope.keys.BOTTOM:
-				scope.pan( 0, - scope.keyPanSpeed );
-				scope.update();
+				/*scope.pan( 0, - scope.keyPanSpeed );
+				scope.update();*/
+                scope.rotateUp(scope.keyPanSpeed/20);
 				break;
 
 			case scope.keys.LEFT:
-				scope.pan( scope.keyPanSpeed, 0 );
-				scope.update();
+				/*scope.pan( scope.keyPanSpeed, 0 );
+				scope.update();*/
+                scope.rotateLeft(  scope.keyPanSpeed);
 				break;
 
 			case scope.keys.RIGHT:
-				scope.pan( - scope.keyPanSpeed, 0 );
-				scope.update();
+				/*scope.pan( - scope.keyPanSpeed, 0 );
+				scope.update();*/
+
+
+                // rotating across whole screen goes 360 degrees around
+                scope.rotateLeft(- scope.keyPanSpeed);//2 * Math.PI * rotateDelta.x / element.clientWidth * scope.rotateSpeed );
+
+               // rotateStart.copy( rotateEnd );
+
 				break;
 
 		}
