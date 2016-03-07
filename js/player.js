@@ -658,6 +658,6 @@ Util.isMSEdge = function() {
 
 Util.isIE = function(){
    return ((navigator.appName == 'Microsoft Internet Explorer') ||
-        ((navigator.appName == 'Mozilla') && (new RegExp("Trident").exec(navigator.userAgent) != null)));
+        ((navigator.appName == 'Mozilla' || navigator.appName == 'Netscape') && (new RegExp("Trident").exec(navigator.userAgent) != null)));
 }
 
