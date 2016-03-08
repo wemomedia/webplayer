@@ -48,11 +48,11 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	// Set to true to disable this control
 	this.noRotate = false;
-	this.rotateSpeed = 1.0;
+	this.rotateSpeed = 0.1; //JM changed
 
 	// Set to true to disable this control
 	this.noPan = false;
-	this.keyPanSpeed = 6.0;	// pixels moved per arrow key push
+    this.keyPanSpeed =0.0005;	// pixels moved per arrow key push //JM changed
 
 	// Set to true to automatically rotate around the target
 	this.autoRotate = false;
@@ -103,6 +103,9 @@ THREE.OrbitControls = function ( object, domElement ) {
 	var phi;
 	var phiDelta = 0;
 	var thetaDelta = 0;
+    var momentum = 0; //JM added
+    var keyboardMomentum = 0.98; //JM added
+    var mouseMomentum = 0.9; //JM added
 	var scale = 1;
 	var pan = new THREE.Vector3();
 
@@ -321,8 +324,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		this.object.lookAt( this.target );
 
-		thetaDelta = 0;
-		phiDelta = 0;
+        thetaDelta =thetaDelta*momentum; //JM changed
+        phiDelta = phiDelta*momentum; //JM changed
 		scale = 1;
 		pan.set( 0, 0, 0 );
 
@@ -442,6 +445,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 			rotateStart.copy( rotateEnd );
 
+            momentum = mouseMomentum; //JM added
+
 		} else if ( state === STATE.DOLLY ) {
 
 			if ( scope.noZoom === true ) return;
@@ -534,20 +539,23 @@ THREE.OrbitControls = function ( object, domElement ) {
 			case scope.keys.UP:
 				/*scope.pan( 0, scope.keyPanSpeed );
 				scope.update();*/
-                scope.rotateUp(-scope.keyPanSpeed/20);
+                scope.rotateUp(- scope.keyPanSpeed);
+                momentum = keyboardMomentum ; //JM changed
 				break;
 
 			case scope.keys.BOTTOM:
 				/*scope.pan( 0, - scope.keyPanSpeed );
 				scope.update();*/
-                scope.rotateUp(scope.keyPanSpeed/20);
-				break;
+                scope.rotateUp( scope.keyPanSpeed);
+                momentum =keyboardMomentum ; //JM changed
+                break;
 
 			case scope.keys.LEFT:
 				/*scope.pan( scope.keyPanSpeed, 0 );
 				scope.update();*/
-                scope.rotateLeft(  scope.keyPanSpeed);
-				break;
+                scope.rotateLeft(  -scope.keyPanSpeed);
+                momentum = keyboardMomentum; //JM changed
+                break;
 
 			case scope.keys.RIGHT:
 				/*scope.pan( - scope.keyPanSpeed, 0 );
@@ -555,9 +563,10 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 
                 // rotating across whole screen goes 360 degrees around
-                scope.rotateLeft(- scope.keyPanSpeed);//2 * Math.PI * rotateDelta.x / element.clientWidth * scope.rotateSpeed );
+                scope.rotateLeft( scope.keyPanSpeed);//2 * Math.PI * rotateDelta.x / element.clientWidth * scope.rotateSpeed );
+                momentum = keyboardMomentum; //JM changed
 
-               // rotateStart.copy( rotateEnd );
+                // rotateStart.copy( rotateEnd );
 
 				break;
 
