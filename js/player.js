@@ -114,33 +114,41 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     var playerControls = document.getElementById("player_controls");
 
     var controlsScaler = Util.isMobile() ? 2 : 1;
-    if (Util.isMobile()) {
-        //playerControls.classList.add("mobileScale"); //didn't work on Samsung built in browser
-    }
-    var playBtmControl = document.createElement("div");
-    playBtmControl.classList.add("btmControl");
+
+//create Loading Icon
+    this.waitIcon = document.createElement("div");
+    this.waitIcon.classList.add("btnWait");
+    this.waitIcon.title = "Loading...";
+
+    this.waitIcon = document.createElement("span");
+    this.waitIcon.classList.add( 'icon-wait');
+    this.waitIconImage =this.loadIcon("Icon-Wait.svg", 50*3, 50*3 ) ;
+    this.waitIcon.appendChild(this.waitIconImage);
+    playerControls.appendChild(this.waitIcon);
+
 
 //create Play Button
-    var playButton = document.createElement("div");
-    playButton.classList.add("btnPlay");
-    playButton.title = "Play/Pause video";
-    playButton.setAttribute("id", "play_button");
+    this.playButton = document.createElement("div");
+    this.playButton.classList.add("btnPlay");
+    this.playButton.title = "Play/Pause video";
+    this.playButton.setAttribute("id", "play_button");
 
     this.playButtonIcon = document.createElement("span");
-    this.playButtonIcon.classList.add( Util.isMobile() ? 'icon-play-mobile' : 'icon-play');
-    this.playImage =this.loadIcon("play.svg", 30*controlsScaler, 30*controlsScaler ) ;
+    this.playButtonIcon.classList.add( 'icon-play');
+    this.playImage =this.loadIcon("Icon-Play.svg", 50*controlsScaler, 50*controlsScaler ) ;
     this.playButtonIcon.appendChild(this.playImage);
-    this.pauseImage =this.loadIcon("pause.svg", 25*controlsScaler, 25*controlsScaler) ;
+    this.pauseImage =this.loadIcon("Icon-Pause.svg", 50*controlsScaler, 50*controlsScaler) ;
     this.playButtonIcon.appendChild(this.pauseImage);
-    playButton.appendChild(this.playButtonIcon);
-    playBtmControl.appendChild(playButton);
+    this.playButton.appendChild(this.playButtonIcon);
+    playerControls.appendChild(this.playButton);
+
 
 
 //create Progress Bar
     this.progressBar = document.createElement("div");
-    this.progressBar.classList.add(Util.isMobile() ? "progress-bar-mobile" : "progress-bar");
-    this.progressBarWidth = Util.isMobile() ? 50 : 200;
-    //this.progressBar.width = this.progressBarWidth +18;
+    this.progressBar.classList.add("progress-bar");
+    this.progressBarWidth = playerControls.offsetWidth - 160;//Util.isMobile() ? 50 : 200;
+    this.progressBar.style.width = this.progressBarWidth +"px";
     var progress = document.createElement("div");
     //progress.width = this.progressBarWidth;
     progress.classList.add(Util.isMobile() ? "progress-mobile" : "progress");
@@ -152,69 +160,70 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     this.timeBar.classList.add("timeBar");
     progress.appendChild(this.timeBar);
 
-    playBtmControl.appendChild(this.progressBar);
+    playerControls.appendChild(this.progressBar);
 
-//createMute Button
-    var muteButton = document.createElement("div");
-    muteButton.classList.add("sound", "sound2", "btn");
-    muteButton.title = "Mute/Unmute sound";
-    var muteButtonIcon = document.createElement("span");
-    muteButtonIcon.classList.add( Util.isMobile() ? 'icon-sound-mobile' :"icon-sound");
-    this.speakerImage =this.loadIcon("speaker.svg", 22*controlsScaler, 22*controlsScaler) ;
-    muteButtonIcon.appendChild(this.speakerImage);
-    this.muteImage =this.loadIcon("mute.svg", 22*controlsScaler, 22*controlsScaler) ;
-    muteButtonIcon.appendChild(this.muteImage);
-    this.muteImage.style.display = "none";
-    muteButton.appendChild(muteButtonIcon);
-    playBtmControl.appendChild(muteButton);
-
+    if (! Util.isMobile()) {
+    //createMute Button
+        var muteButton = document.createElement("div");
+        muteButton.classList.add("sound", "sound2", "btn");
+        muteButton.title = "Mute/Unmute sound";
+        var muteButtonIcon = document.createElement("span");
+        muteButtonIcon.classList.add(Util.isMobile() ? 'icon-sound-mobile' : "icon-sound");
+        this.speakerImage = this.loadIcon("Icon-Volume.svg", 50, 50);
+        muteButtonIcon.appendChild(this.speakerImage);
+        this.muteImage = this.loadIcon("Icon-VolumeMute.svg", 50, 50);
+        muteButtonIcon.appendChild(this.muteImage);
+        this.muteImage.style.display = "none";
+        muteButton.appendChild(muteButtonIcon);
+        playerControls.appendChild(muteButton);
+    }
 
 
     if (this.vrManager) {
         //create cardboard button
-        var cardboardButton = document.createElement("div");
-        cardboardButton.classList.add("btnCardboard", "btn");
-        cardboardButton.title = "Switch to Google Cardboard VR";
+        this.cardboardButton = document.createElement("div");
+        this.cardboardButton.classList.add("btnCardboard", "btn");
+        this.cardboardButton.title = "Switch to Google Cardboard VR";
         var cardboardButtonIcon = document.createElement("span");
         //Credit: vr goggles by Nick Bluth from the Noun Project
         cardboardButtonIcon.classList.add(Util.isMobile() ? 'icon-cardboard-mobile': "icon-cardboard");
-        var image = this.loadIcon("cardboard.svg", 15*controlsScaler, 15*controlsScaler);
+        var image = this.loadIcon("Icon-Goggles.svg", 50, 50);
         cardboardButtonIcon.appendChild(image);
-        cardboardButton.appendChild(cardboardButtonIcon);
-        playBtmControl.appendChild(cardboardButton);
+        this.cardboardButton.appendChild(cardboardButtonIcon);
+        playerControls.appendChild(this.cardboardButton);
+    }
+
+    //create close "X" button
+    if (Util.isMobile()) {
+        this.closeButton = document.createElement("div");
+        this.closeButton.classList.add( "closebtn-mobile", "btn");
+        var closeButtonIcon = document.createElement("span");
+        closeButtonIcon.classList.add( "icon-fullscreen");
+        this.closeImage =this.loadIcon( "Icon-X_close.svg", 50,50) ;
+        closeButtonIcon.appendChild(this.closeImage);
+        this.closeButton.style.display ="none";
+        this.closeButton.appendChild(closeButtonIcon);
+        playerControls.appendChild(this.closeButton);
     }
 
 
 //create full-screen button
-    var fullScreenButton = document.createElement("div");
-    fullScreenButton.classList.add("btnFS", "btn");
-    fullScreenButton.title = "Switch to full screen";
-    var fullScreenButtonIcon = document.createElement("span");
-    fullScreenButtonIcon.classList.add( Util.isMobile() ? 'icon-fullscreen-mobile' :"icon-fullscreen");
-    var image =this.loadIcon("fullscreen.svg", 15*controlsScaler,15*controlsScaler) ;
-    fullScreenButtonIcon.appendChild(image);
-    fullScreenButton.appendChild(fullScreenButtonIcon);
-    playBtmControl.appendChild(fullScreenButton);
+    if (! Util.isMobile()) {
+        var fullScreenButton = document.createElement("div");
+        fullScreenButton.classList.add( "btnFS", "btn");
+        fullScreenButton.title = "Switch to full screen";
+        var fullScreenButtonIcon = document.createElement("span");
+        fullScreenButtonIcon.classList.add("icon-fullscreen");
+        this.fullScreenImage = this.loadIcon("Icon-Enlarge.svg", 50, 50);
+        fullScreenButtonIcon.appendChild(this.fullScreenImage);
+        this.collapseFullScreenImage = this.loadIcon("Icon-Shrink.svg", 50, 50);
+        fullScreenButtonIcon.appendChild(this.collapseFullScreenImage);
+        this.collapseFullScreenImage.style.display = "none";
+        fullScreenButton.appendChild(fullScreenButtonIcon);
+        playerControls.appendChild(fullScreenButton);
+    }
 
-    playerControls.appendChild(playBtmControl);
-
-// I made the lower buttons so big, I don't think that they are
-  /*  if (Util.isAndroid() || Util.isIOS() ) {
-        //create centered Play Button
-        this.playMiddleButton = document.createElement("div");
-        this.playMiddleButton.classList.add("playMiddleButton", "btn");
-        this.playMiddleButton.title = "Play/Pause video";
-        this.playMiddleButton.setAttribute("id", "play_middle_button");
-
-        var playMiddleButtonIcon = document.createElement("span");
-        playMiddleButtonIcon.classList.add('icon-play-middle');
-        this.playMiddleButton.appendChild(playMiddleButtonIcon);
-        var centeredPlayButton = document.getElementById("centered_play_button");
-
-        centeredPlayButton.appendChild(this.playMiddleButton);
-    }*/
-
-    this.controlsWidth = playBtmControl.offsetWidth;
+    this.controlsWidth = playerControls.offsetWidth;
 
     //create centered Replay Button
     this.replayMiddleButton = document.createElement("div");
@@ -225,11 +234,11 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
     var replayMiddleButtonIcon = document.createElement("span");
     replayMiddleButtonIcon.classList.add('icon-replay-middle');
-    image =this.loadIcon("replay.svg", 90, 90 ) ;
+    image =this.loadIcon("Icon-Replay.svg", 90, 90 ) ;
     replayMiddleButtonIcon.appendChild(image);
     this.replayMiddleButton.appendChild(replayMiddleButtonIcon);
-    var centeredPlayButton = document.getElementById("centered_play_button");
-    centeredPlayButton.appendChild(this.replayMiddleButton);
+
+    playerControls.appendChild(this.replayMiddleButton);
 
     var that = this;
 
@@ -264,41 +273,74 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         if (Util.isAndroid() && ! that.isFullScreen) {
             that.fullScreen();
         }
-
+        that.pauseImage.style.display = "block";
         // Play the video
         that.video.play();
+        that.replayMiddleButton.style.display = "none";
     }
 
     // Event listener for the play/pause buttons
-    playButton.addEventListener("click", clickPlay);
+    this.playButton.addEventListener("click", clickPlay);
 
     if (this.replayMiddleButton) {
         this.replayMiddleButton.addEventListener("click", clickReplay);
     }
 
     // Event listener for the mute button
-    muteButton.addEventListener("click", function() {
-        if (that.video.muted == false) {
-            // Mute the video
-            that.video.muted = true;
+    if (muteButton) {
+        muteButton.addEventListener("click", function () {
+            if (that.video.muted == false) {
+                // Mute the video
+                that.video.muted = true;
 
-            that.speakerImage.style.display = "none";
-            that.muteImage.style.display = "block";
-        } else {
-            // Unmute the video
-            that.video.muted = false;
+                that.speakerImage.style.display = "none";
+                that.muteImage.style.display = "block";
+            } else {
+                // Unmute the video
+                that.video.muted = false;
 
-            that.speakerImage.style.display = "block";
-            that.muteImage.style.display = "none";
-        }
-    });
-
-    if (cardboardButton) {
-        // Event listener for the mute button
-        cardboardButton.addEventListener("click", function () {
-            if (that.vrManager) {
-                that.vrManager.onVRToggle_();
+                that.speakerImage.style.display = "block";
+                that.muteImage.style.display = "none";
             }
+        });
+    }
+
+    if (this.cardboardButton) {
+        // Event listener for the mute button
+        this.cardboardButton.addEventListener("click", function () {
+            that.vrManager.setVRMode_();
+            that.fullScreen();
+            that.setVideoUIState();
+        });
+    }
+
+    // Event listener for the full-screen button
+    if (fullScreenButton) {
+        fullScreenButton.addEventListener("click", function () {
+            if (that.vrManager) {
+                if (that.vrManager.isVRMode()) {
+                    that.vrManager.setNormalMode_();
+                } else {
+                    that.vrManager.onFSClick_();
+                    if (that.vrManager.isFullscreenMode()) {
+                        //that.isFullScreen = true;
+                        that.fullScreen();
+                    }
+                }
+            } else {
+                that.fullScreen();
+
+            }
+            that.setVideoUIState();
+        });
+    }
+
+    if (this.closeButton) {
+        // Event listener for the mute button
+        this.closeButton.addEventListener("click", function () {
+            that.vrManager.setNormalMode_();
+
+            that.setVideoUIState();
         });
     }
 
@@ -326,6 +368,9 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         //as well as progress bar
         var maxduration = that.video.duration;
 
+      //  that.progressBarWidth = playerControls.offsetWidth - 160;//Util.isMobile() ? 50 : 200;
+     //   that.progressBar.style.width = that.progressBarWidth +"px";
+
         var timeBarStartX = that.progressBar.offsetParent.offsetLeft + that.progressBar.offsetLeft + 10;//padding is 10px
         var timeBarEndX  =  that.progressBarWidth;
 
@@ -342,7 +387,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         }
        // that.timeBar.style.width = percentage + '%';
         that.video.currentTime = maxduration * percentage / 100;
-        that.timeBar.style.width =  (that.video.currentTime / that.video.duration) *that.progressBarWidth + "px";
+        that.timeBar.style.width =  ((maxduration * percentage / 100) / that.video.duration) *that.progressBarWidth + "px";
     };
 
     // Update the scrubber bar as the video plays
@@ -368,9 +413,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     };
 
     this.video.addEventListener("canplay", function() {
-
         setTimeout(startBuffer, 150);
-
     });
 
     this.video.addEventListener("canplaythrough", function () {
@@ -378,23 +421,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         that.setVideoUIState();
     }, false);
 
-    // Event listener for the full-scree
-    //
-    // n button
-   // if (fullScreenButton) {
-        fullScreenButton.addEventListener("click", function () {
-            if (that.vrManager) {
-                that.vrManager.onFSClick_();
-                if (that.vrManager.isFullscreenMode() ){
-                    //that.isFullScreen = true;
-                    that.fullScreen();
-                }
-            } else {
-                that.fullScreen();
-                that.setVideoUIState();
-            }
-        });
-  //  }
+
 
     var container = document.getElementById("container");
     container.addEventListener( "click" , function() {
@@ -433,24 +460,40 @@ WEVR.Player.prototype.play = function() {
 WEVR.Player.prototype.positionControls = function(){
 
  // Playback controls
-    var controls = document.getElementById("player_controls");
+    var playerControls = document.getElementById("player_controls");
 
     var width = this.container.offsetWidth;
-    var cwidth = this.controlsWidth;//controls.offsetWidth;
-    var left = width  / 2 - cwidth/2;
 
-    controls.style.left = left + "px";
-    controls.style.bottom = "20px";
+    this.progressBarWidth = playerControls.offsetWidth - 200;//Util.isMobile() ? 50 : 200;
+    this.progressBar.style.width = this.progressBarWidth +"px";
 
-    //centered play button
-    var centeredPlayButton = document.getElementById("centered_play_button");
     var pwidth = 100;
-    left = (width - pwidth) / 2;
-    centeredPlayButton.style.left = left + "px";
+    var left = (width - pwidth) / 2;
     var height = this.container.offsetHeight;
     var pheight = 100;
     var top = (height - pheight) / 2;
-    centeredPlayButton.style.top = top + "px";
+
+    if ( Util.isMobile() ) {
+
+        this.playButton.style.left = left + "px";
+
+        this.playButton.style.top = top + "px";
+    }
+    this.waitIcon.style.top = top +"px";
+    this.waitIcon.style.left = left + "px";
+
+    //centered play button
+   // var centeredPlayButton = document.getElementById("centered_play_button");
+    var pwidth = 100;
+    left = (width - pwidth) / 2;
+
+    this.replayMiddleButton.style.left = left + "px";
+    var height = this.container.offsetHeight;
+    var pheight = 100;
+    var top = (height - pheight) / 2;
+    this.replayMiddleButton.style.top = top + "px";
+
+
 
 }
 
@@ -462,18 +505,23 @@ WEVR.Player.prototype.setVideoUIState = function(){
     }
 
     if (this.isInitialBuffering){
-        this.playImage.style.display = "none"; //TODO create a waiting icon
+        this.waitIcon.style.display = "block";
+        this.playImage.style.display = "none";
         this.pauseImage.style.display = "none";
         return;
     }
+    this.waitIcon.style.display = "none";
     if (this.video.currentTime > this.video.duration - 1){ //we are one second from the end
         if (this.replayMiddleButton ){
             this.replayMiddleButton.style.display = "block";
+            this.playImage.style.display = "none";
+            this.pauseImage.style.display = "none";
         }
         this.isPlaying = false;
     }
      if (this.isPlaying ) {
          this.playImage.style.display = "none";
+         this.waitIcon.style.display = "none";
          this.pauseImage.style.display = "block";
          if (this.replayMiddleButton){
              this.replayMiddleButton.style.display = "none";
@@ -485,12 +533,43 @@ WEVR.Player.prototype.setVideoUIState = function(){
          }, 5000);
 
     } else {
-         this.playImage.style.display = "block";
+         if (! (this.video.currentTime > this.video.duration - 1)) { //show it unless the replay button is already up
+             this.playImage.style.display = "block";
+         }
          this.pauseImage.style.display = "none";
 
          var playerControls = document.getElementById("player_controls");
          playerControls.style.display = "block";
     }
+    if ( ! this.isFullScreen) {
+        if(this.collapseFullScreenImage) {
+            this.collapseFullScreenImage.style.display = "none";
+        }
+        if ( this.closeButton ) {
+            this.closeButton.style.display = "none";
+        }
+        if (this.fullScreenImage) {
+            this.fullScreenImage.style.display = "block";
+        }
+    } else {
+        if ( !Util.isMobile() ) {
+            this.collapseFullScreenImage.style.display = "block";
+            this.fullScreenImage.style.display = "none";
+        }
+        if ( this.closeButton ) {
+            this.closeButton.style.display = "block";
+        }
+        if (this.vrManager){
+            if ( this.vrManager.isVRMode()) {
+
+                this.cardboardButton.style.display = "none";
+            } else {
+
+                this.cardboardButton.style.display = "block";
+            }
+        }
+    }
+
 }
 
 WEVR.Player.prototype.initControls = function() {

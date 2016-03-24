@@ -2899,6 +2899,18 @@ WebVRManager.prototype.onVRToggle_ = function(){
     }
 }
 
+//JM added:
+WebVRManager.prototype.setNormalMode_ = function(){
+    this.anyModeToNormal_();
+    this.setMode_(Modes.NORMAL);
+}
+
+    //JM addedL
+    WebVRManager.prototype.setVRMode_ = function(){
+        this.anyModeToVR_();
+        this.setMode_(Modes.VR);
+    }
+
 
 /**
  * Back button was clicked.
@@ -2945,6 +2957,17 @@ WebVRManager.prototype.vrToMagicWindow_ = function() {
   // Android bug: when returning from VR, resize the effect.
   this.resize_();
 }
+
+    //JM added:
+    WebVRManager.prototype.vrToMagicWindowRelease_ = function(){
+        this.releasePointerLock_();
+        this.wakelock.release();
+        this.distorter.unpatch();
+
+        // Android bug: when returning from VR, resize the effect.
+        this.resize_();
+        this.resizeIfNeeded_(this.camera);
+    }
 
 WebVRManager.prototype.anyModeToNormal_ = function() {
   //this.effect.setFullScreen(false);
