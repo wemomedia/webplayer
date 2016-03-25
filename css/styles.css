@@ -50,6 +50,12 @@ html {
     border:none;
     overflow:hidden;
     pointer-events:none;
+  /*  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;*/
 }
 
 .btnPlay {
@@ -59,12 +65,24 @@ html {
     left:20px;
     cursor:pointer;
     pointer-events:visible;
+    /*-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;*/
 }
 
 .icon-play{
     display: block;
     width:50px;
     height:50px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 
@@ -93,7 +111,7 @@ html {
  .sound{
     position: absolute;
     bottom:0px;
-    right:60px;
+    right:70px;
     float:left;
     cursor: pointer;
     pointer-events:visible;
@@ -113,7 +131,7 @@ html {
  .btnFS{
     position: absolute;
     bottom:0px;
-    right:10px;
+    right:20px;
     float:left;
     pointer-events:visible;
 }
@@ -121,7 +139,7 @@ html {
  .btnFS-mobile{
     position: absolute;
     top:20px;
-    right:10px;
+    right:20px;
     float:left;
     pointer-events:visible;
 }
@@ -137,8 +155,8 @@ html {
 
  .closebtn-mobile{
     position: absolute;
-    top:20px;
-    left:10px;
+    top:45px;
+    left:25px;
     float:left;
     pointer-events:visible;
 }
@@ -146,21 +164,12 @@ html {
 
 .btnCardboard{
     position: absolute;
-    top:20px;
-    right:50px;
+    top:45px;
+    right:40px;
     float:left;
     pointer-events:visible;
 }
-.icon-cardboard {
-    display: block;
-    width: 30px;
-    height: 30px;
-}
-.icon-cardboard-mobile {
-    display: block;
-    width: 42px;
-    height: 42px;
-}
+
 
 /* PROGRESS BAR CSS */
 /* Progress bar */
@@ -172,21 +181,27 @@ html {
     margin: 18px;
     background: rgba(111,134,163,1);
     float:left;
-    pointer-events:visible;
+  /*  pointer-events:visible;*/
+}
+
+.progress-bar-mobile {
+    position: absolute;
+    bottom:0px;
+    left:20px;
+    height:12px;
+    margin: 18px;
+    background: rgba(111,134,163,1);
+    float:left;
+    /*pointer-events:visible;*/
 }
 
 .progress {
     height:12px;
-    width:200px;
     position:relative;
     cursor:pointer;
+    /*pointer-events: visible;*/
 }
-.progress-mobile {
-    height:12px;
-    width:50px;
-    position:relative;
-    cursor:pointer;
-}
+
 
 .progress span {
     height:100%;
@@ -194,6 +209,7 @@ html {
     top:0;
     left:0;
     display:block;
+    pointer-events: visible;
     /*border-radius:10px;*/
 }
 
@@ -203,12 +219,12 @@ html {
     top:0;
     left:0;
     display:block;
+    pointer-events: visible;
 }
 
 .timeBar{
     z-index:10;
     width:0;
-    /*background: -webkit-linear-gradient(top, rgba(107,204,226,1) 0%,rgba(29,163,208,1) 100%);*/
     background:  rgba(255,255,255,1);
 }
 .bufferBar{
@@ -216,6 +232,14 @@ html {
     width:0;
     background: rgba(111,111,111,0.5) ;
 }
+.scrubber{
+    z-index:10;
+    width:20px;
+    left:-6px;
+    margin:-6px -6px 0 0;
+    pointer-events: none;
+}
+
 
 
 

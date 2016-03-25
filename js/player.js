@@ -113,7 +113,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 //DOM-based player controls
     var playerControls = document.getElementById("player_controls");
 
-    var controlsScaler = Util.isMobile() ? 2 : 1;
+    var playIconSize = Util.isMobile() ? 130 : 50;
 
 //create Loading Icon
     this.waitIcon = document.createElement("div");
@@ -122,7 +122,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
     this.waitIcon = document.createElement("span");
     this.waitIcon.classList.add( 'icon-wait');
-    this.waitIconImage =this.loadIcon("Icon-Wait.svg", 50*3, 50*3 ) ;
+    this.waitIconImage =this.loadIcon("Icon-Wait.svg", 200, 200 ) ;
     this.waitIcon.appendChild(this.waitIconImage);
     playerControls.appendChild(this.waitIcon);
 
@@ -135,9 +135,9 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
     this.playButtonIcon = document.createElement("span");
     this.playButtonIcon.classList.add( 'icon-play');
-    this.playImage =this.loadIcon("Icon-Play.svg", 50*controlsScaler, 50*controlsScaler ) ;
+    this.playImage =this.loadIcon("Icon-Play.svg", playIconSize, playIconSize ) ;
     this.playButtonIcon.appendChild(this.playImage);
-    this.pauseImage =this.loadIcon("Icon-Pause.svg", 50*controlsScaler, 50*controlsScaler) ;
+    this.pauseImage =this.loadIcon("Icon-Pause.svg", playIconSize, playIconSize) ;
     this.playButtonIcon.appendChild(this.pauseImage);
     this.playButton.appendChild(this.playButtonIcon);
     playerControls.appendChild(this.playButton);
@@ -146,12 +146,12 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
 //create Progress Bar
     this.progressBar = document.createElement("div");
-    this.progressBar.classList.add("progress-bar");
+    this.progressBar.classList.add( Util.isMobile() ? "progress-bar-mobile" : "progress-bar");
     this.progressBarWidth = playerControls.offsetWidth - 160;//Util.isMobile() ? 50 : 200;
     this.progressBar.style.width = this.progressBarWidth +"px";
     var progress = document.createElement("div");
     //progress.width = this.progressBarWidth;
-    progress.classList.add(Util.isMobile() ? "progress-mobile" : "progress");
+    progress.classList.add( "progress");
     this.progressBar.appendChild(progress);
     this.bufferBar = document.createElement("span");
     this.bufferBar.classList.add("bufferBar");
@@ -159,6 +159,13 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     this.timeBar = document.createElement("span");
     this.timeBar.classList.add("timeBar");
     progress.appendChild(this.timeBar);
+
+/*    this.scrubber = document.createElement("span");
+    this.scrubber.classList.add("scrubber");
+    var scrubberImage = this.loadIcon("Icon-Scrubber.svg", 30, 30);
+    this.scrubber.appendChild(scrubberImage);
+    //this.scrubber.style.display = "none";
+    progress.appendChild(this.scrubber);*/
 
     playerControls.appendChild(this.progressBar);
 
@@ -185,8 +192,6 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         this.cardboardButton.classList.add("btnCardboard", "btn");
         this.cardboardButton.title = "Switch to Google Cardboard VR";
         var cardboardButtonIcon = document.createElement("span");
-        //Credit: vr goggles by Nick Bluth from the Noun Project
-        cardboardButtonIcon.classList.add(Util.isMobile() ? 'icon-cardboard-mobile': "icon-cardboard");
         var image = this.loadIcon("Icon-Goggles.svg", 50, 50);
         cardboardButtonIcon.appendChild(image);
         this.cardboardButton.appendChild(cardboardButtonIcon);
@@ -346,23 +351,95 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
     // Event listeners for scrubbing
     var timeDrag = false;
-    this.progressBar.addEventListener('mousedown', function(e) {
+   /* this.scrubber.addEventListener('mousedown', function(e) {
         timeDrag = true;
-        updatebar(e.pageX);
+        //updatebar(e.pageX);
     });
-    this.progressBar.addEventListener('mouseup', function(e) {
-        if(timeDrag) {
+    this.scrubber.addEventListener('mouseout', function(e) {
+        if ( timeDrag) {
+            updatebar(e.pageX);
+            timeDrag = false;
+        }
+    });*/
+    /*this.scrubber.addEventListener('mouseup', function(e) {
+        if (timeDrag) {
             timeDrag = false;
             updatebar(e.pageX);
+            if (that.video.currentTime <= that.video.duration - 1) { //we are one second from the end
+                if (that.replayMiddleButton) {
+                    that.replayMiddleButton.style.display = "none";
+                }
+            }
+
         }
+    });*/
+    this.progressBar.addEventListener('mouseup', function(e) {
+       // if (timeDrag) {
+            timeDrag = false;
+            updatebar(e.pageX);
+            if (that.video.currentTime <= that.video.duration - 1) { //we are one second from the end
+                if (that.replayMiddleButton) {
+                    that.replayMiddleButton.style.display = "none";
+                }
+            }
+            /* that.isPlaying = true;
+             that.video.play();*/
+       // }
     });
     this.progressBar.addEventListener('mousemove', function(e) {
         if(timeDrag) {
+            that.isPlaying = false;
+           // Pause the video
+           that.video.pause();
             updatebar(e.pageX);
         }
     });
+
+    if (Util.isMobile()) {
+        this.progressBar.addEventListener('touchend', function(e) {
+            timeDrag = false;
+            that.updateAfterDrag= true;
+            updatebar(e.pageX);
+            if (that.video.currentTime <= that.video.duration - 1) { //we are one second from the end
+                if (that.replayMiddleButton) {
+                    that.replayMiddleButton.style.display = "none";
+                }
+            }
+        });
+
+       /* this.scrubber.addEventListener('touchstart', function (e) {
+            e.preventDefault();
+            timeDrag = true;
+            updatebar(e.touches[0].pageX);
+        });
+        this.scrubber.addEventListener('touchend', function (e) {
+            e.preventDefault();
+            if (timeDrag) {
+                timeDrag = false;
+                updatebar(e.touches[0].pageX);
+                if (that.video.currentTime <= that.video.duration - 1) { //we are one second from the end
+                    if (that.replayMiddleButton) {
+                        that.replayMiddleButton.style.display = "none";
+                    }
+                    that.isPlaying = true;
+                    that.video.play();
+                }
+            }
+        });
+        this.scrubber.addEventListener('touchmove', function (e) {
+            e.preventDefault();
+            if (timeDrag) {
+                that.isPlaying = false;
+                that.video.pause();
+                updatebar(e.touches[0].pageX);
+            }
+        });*/
+    }
+
     var updatebar = function(x) {
 
+        that.isInitialBuffering = true;
+        that.setVideoUIState();
         //calculate drag position
         //and update video currenttime
         //as well as progress bar
@@ -386,18 +463,38 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
             that.setVideoUIState();
         }
        // that.timeBar.style.width = percentage + '%';
-        that.video.currentTime = maxduration * percentage / 100;
+       if (! timeDrag) {
+          that.video.currentTime = maxduration * percentage / 100;
+       }
         that.timeBar.style.width =  ((maxduration * percentage / 100) / that.video.duration) *that.progressBarWidth + "px";
+
+        //that.scrubber.style.left =  ((maxduration * percentage / 100) / that.video.duration) *that.progressBarWidth- 6+ "px";
     };
 
     // Update the scrubber bar as the video plays
     this.video.addEventListener("timeupdate", function() {
+        if (that.isInitialBuffering) {
+            that.isInitialBuffering = false;
+            that.setVideoUIState();
+        }
+        if (Util.isMobile() && that.updateAfterDrag ) {
+            //that.setVideoUIState();
+
+            if (!that.scrubberTimeout ) {
+                that.scrubberTimeout = setTimeout(function () {
+                    var playerControls = document.getElementById("player_controls");
+                    playerControls.style.display = "none";
+                }, 5000);
+            }
+            that.updateAfterDrag = false;
+        }
 
         if (that.video.currentTime > that.video.duration - 1){ //within 1 sec of the end
             that.setVideoUIState();
         }
         that.timeBar.style.width =  (that.video.currentTime / that.video.duration) *that.progressBarWidth + "px";
 
+       // that.scrubber.style.left =  (that.video.currentTime / that.video.duration) *that.progressBarWidth - 6 + "px";
     });
 
     // Timer to keep the buffer bar up to date
@@ -416,7 +513,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         setTimeout(startBuffer, 150);
     });
 
-    this.video.addEventListener("canplaythrough", function () {
+    this.video.addEventListener("canplaythrough", function () { //on Android, this doesn't get fired after a position change
         that.isInitialBuffering = false;
         that.setVideoUIState();
     }, false);
@@ -464,32 +561,36 @@ WEVR.Player.prototype.positionControls = function(){
 
     var width = this.container.offsetWidth;
 
-    this.progressBarWidth = playerControls.offsetWidth - 200;//Util.isMobile() ? 50 : 200;
+    this.progressBarWidth = playerControls.offsetWidth - (Util.isMobile() ? 80 : 210);
     this.progressBar.style.width = this.progressBarWidth +"px";
 
-    var pwidth = 100;
-    var left = (width - pwidth) / 2;
-    var height = this.container.offsetHeight;
-    var pheight = 100;
-    var top = (height - pheight) / 2;
 
     if ( Util.isMobile() ) {
-
+        var pwidth = 130;
+        var left = (width - pwidth) / 2;
+        var height = this.container.offsetHeight;
+        var pheight = 95;
+        var top = (height - pheight) / 2;
         this.playButton.style.left = left + "px";
-
         this.playButton.style.top = top + "px";
     }
+
+    var pwidth = 200;
+    var left = (width - pwidth) / 2;
+    var height = this.container.offsetHeight;
+    var pheight = 170;
+    var top = (height - pheight) / 2;
     this.waitIcon.style.top = top +"px";
     this.waitIcon.style.left = left + "px";
 
     //centered play button
    // var centeredPlayButton = document.getElementById("centered_play_button");
-    var pwidth = 100;
+    var pwidth = 80;
     left = (width - pwidth) / 2;
 
     this.replayMiddleButton.style.left = left + "px";
     var height = this.container.offsetHeight;
-    var pheight = 100;
+    var pheight = 55;
     var top = (height - pheight) / 2;
     this.replayMiddleButton.style.top = top + "px";
 
@@ -669,9 +770,9 @@ WEVR.Player.prototype.fullScreen = function() {
         } else if (canvas.webkitRequestFullscreen) {
             canvas.webkitRequestFullscreen(); // Chrome and Safari
         }
-        if (!this.isPlaying) {
+       /* if (!this.isPlaying) {
             this.play();
-        }
+        }*/
 
     } else {
         this.isFullScreen = false;
