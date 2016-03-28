@@ -1,0 +1,32 @@
+ <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+             viewBox="0 0 70 70" xml:space="preserve">
+            <style>.cls-1,.cls-3{fill:none;}.cls-2{clip-path:url(#clip-path);}.cls-3{stroke:#fff;stroke-width:3px;}.cls-4{fill:#fff;}</style>
+            <defs>
+                <clipPath id="clip-path"><rect class="cls-1" x="5.55" y="5.55" width="58.91" height="58.91"/></clipPath>
+                  <linearGradient id="Gradient1">
+                    <stop class="stop1" offset="0%"/>
+                    <stop class="stop2" offset="10%"/>
+                    <stop class="stop3" offset="30%"/>
+                    <stop class="stop4" offset="100%"/>
+                  </linearGradient>
+
+                  <style type="text/css"><![CDATA[
+                    #rect1 { stroke: url(#Gradient1); }
+                    .stop1 { stop-color: white; stop-opacity: 0; }
+                    .stop2 { stop-color: white; stop-opacity: 1; }
+                    .stop3 { stop-color: white; stop-opacity: 1;  }
+                    .stop4 { stop-color: white; stop-opacity: 1;  }
+                  ]]></style>
+              </defs>
+
+            <path id="rect1"  fill="none"  stroke-width="2"  d="M21.75,42.35A15.18,15.18,0,1,0,38.64,20.19a14.16,14.16,0,0,0-4-.41"  >
+                <animateTransform attributeName="transform"
+                        type="rotate"
+                        from="0 35 35"
+                        to="360 35 35"
+                        begin="0s"
+                        dur="2s"
+                        repeatCount="indefinite"
+                      />
+            </path>
+        </svg>

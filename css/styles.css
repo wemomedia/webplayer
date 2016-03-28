@@ -1,7 +1,6 @@
 body {
     margin: 0px;
     background-color: #fff;
-
 }
 
 p{
@@ -11,7 +10,6 @@ p{
 
 #container {
     width:100%;
-   /* height:100%;*/
     position:absolute;
     border:none;
     overflow:hidden;
@@ -35,177 +33,175 @@ html {
     overflow:hidden;
     background:#000;
     color:#ccc;
-    border-radius: 6px;
-    border: 1px solid rgba(0,0,0,0.8);
-    box-shadow: 0 0 5px rgba(0,0,0,0.5);
     margin: 50px auto 0;
 }
 
 
-/* video caption css */
-.caption{
-    display:block;
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    padding: 5px 10px;
-    color:#ddd;
-    font-size:14px;
-    font-weight:300;
-    text-align: center;
-    background: rgba(0,0,0,0.4);
-    text-transform: uppercase;
-    border-radius: 6px 6px 0 0;
-    -webkit-backface-visibility: hidden;
-    -moz-backface-visibility:    hidden;
-    -ms-backface-visibility:     hidden;
-}
 
 /*** VIDEO CONTROLS CSS ***/
 /* control holder */
 .control{
     color:#ccc;
-    position:absolute;
-    bottom:2px;
-    /*left:10px;*/
-   /* width:360px;*/
+    bottom:20px;
     z-index:5;
+    width:100%;
+    height:100%;
+    position:absolute;
+    border:none;
+    overflow:hidden;
+    pointer-events:none;
+  /*  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;*/
 }
-/* control bottom part */
-.btmControl{
-    clear:both;
-}
-.control .btnPlay {
+
+.btnPlay {
     float:left;
-   /* padding:5px;*/
-    background: rgba(0,0,0,0.5);
+    position: absolute;
+    bottom: 0px;
+    left:20px;
     cursor:pointer;
-    border-radius: 6px 0 0 6px;
-    border: 1px solid rgba(0,0,0,0.7);
-    box-shadow: inset 0 0 1px rgba(255,255,255,0.5);
-}
-.control .icon-play{
-    display: block;
-    width:34px;
-    height:30px;
-    margin: 4px 0 0 8px;
-}
-.control .icon-play-mobile{
-    display: block;
-    width:42px;
-    height:48px;
-    margin: 8px 0 0 10px;
+    pointer-events:visible;
+    /*-webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;*/
 }
 
-.control .selected{
-    font-size:15px;
-    color:#ccc;
+.icon-play{
+    display: block;
+    width:50px;
+    height:50px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
-.control .sound{
+
+
+.btnWait {
     float:left;
-    background: rgba(0,0,0,0.5);
-    border: 1px solid rgba(0,0,0,0.7);
-    border-left: none;
-    box-shadow: inset 0 0 1px rgba(255,255,255,0.5);
+    position: absolute;
+
+
+}
+
+ .icon-wait{
+    display: block;
+    width: 90px;
+    height: 90px;
+    position: absolute;
+   /* stroke-dasharray: 20;
+    animation: dash 10s linear infinite;*/
+}
+@keyframes dash {
+    to {
+        stroke-dashoffset: 100;
+    }
+}
+
+
+ .sound{
+    position: absolute;
+    bottom:0px;
+    right:70px;
+    float:left;
     cursor: pointer;
+    pointer-events:visible;
 }
-.control .icon-sound {
+ .icon-sound {
     display: block;
-    width: 30px;
-    height: 32px;
-    margin: 2px 0 0 4px;
+    width: 50px;
+    height: 50px;
+    /*margin: 2px 0 0 4px;*/
 }
-.control .icon-sound-mobile {
+ .icon-sound-mobile {
     display: block;
-    width: 42px;
-    height: 48px;
-    margin: 4px 4px 4px 8px;
+    width: 50px;
+    height: 50px;
 }
 
-.control .btnFS{
-    border-radius: 0 6px 6px 0;
+ .btnFS{
+    position: absolute;
+    bottom:0px;
+    right:20px;
     float:left;
-    background: rgba(0,0,0,0.5);
-    border: 1px solid rgba(0,0,0,0.7);
-    border-left: none;
-    box-shadow: inset 0 0 1px rgba(255,255,255,0.5);
+    pointer-events:visible;
 }
 
-
-.control .icon-fullscreen {
-    display: block;
-    width: 30px;
-    height: 28px;
-    margin: 6px 0 0 7px;
-}
-.control .icon-fullscreen-mobile {
-    display: block;
-    width: 42px;
-    height: 44px;
-    margin: 12px 0px 0px 12px;
-}
-
-.control .btnCardboard{
-    border-radius: 0 0 0  0;
+ .btnFS-mobile{
+    position: absolute;
+    top:20px;
+    right:20px;
     float:left;
-    background: rgba(0,0,0,0.5);
-    border: 1px solid rgba(0,0,0,0.7);
-    border-left: none;
-    box-shadow: inset 0 0 1px rgba(255,255,255,0.5);
+    pointer-events:visible;
 }
-.control .icon-cardboard {
+
+
+ .icon-fullscreen {
     display: block;
-    width: 30px;
-    height: 30px;
-    margin: 6px 0 0 7px;
+    width: 50px;
+    height: 50px;
+     pointer-events:visible;
 }
-.control .icon-cardboard-mobile {
-    display: block;
-    width: 42px;
-    height: 42px;
-    margin: 14px 0 0 12px;
+
+
+ .closebtn-mobile{
+    position: absolute;
+    top:45px;
+    left:25px;
+    float:left;
+    pointer-events:visible;
 }
+
+
+.btnCardboard{
+    position: absolute;
+    top:45px;
+    right:40px;
+    float:left;
+    pointer-events:visible;
+}
+
 
 /* PROGRESS BAR CSS */
 /* Progress bar */
 .progress-bar {
-    height:36px;
-    padding: 10px 10px 0 10px;
-    background: rgba(0,0,0,0.6);
-    border: 1px solid rgba(0,0,0,0.7);
-    border-left: none;
-    box-shadow: inset 0 0 1px rgba(255,255,255,0.5);
+    position: absolute;
+    bottom:0px;
+    left:60px;
+    height:12px;
+    margin: 18px;
+    background: rgba(111,134,163,1);
     float:left;
+  /*  pointer-events:visible;*/
 }
 
 .progress-bar-mobile {
-    height: 58px;
-    padding: 20px 10px 20px 10px;
-    background: rgba(0,0,0,0.6);
-    border: 1px solid rgba(0,0,0,0.7);
-    border-left: none;
-    box-shadow: inset 0 0 1px rgba(255,255,255,0.5);
+    position: absolute;
+    bottom:0px;
+    left:20px;
+    height:12px;
+    margin: 18px;
+    background: rgba(111,134,163,1);
     float:left;
+    /*pointer-events:visible;*/
 }
+
 .progress {
-    height:7px;
-    width:200px;
+    height:12px;
     position:relative;
     cursor:pointer;
-    background: rgba(0,0,0,0.4); /* fallback */
-    box-shadow: 0 1px 0 rgba(255,255,255,0.1), inset 0 1px 1px rgba(0,0,0,1);
-    border-radius:10px;
+    /*pointer-events: visible;*/
 }
-.progress-mobile {
-    height:15px;
-    width:50px;
-    position:relative;
-    cursor:pointer;
-    background: rgba(0,0,0,0.4); /* fallback */
-    box-shadow: 0 1px 0 rgba(255,255,255,0.1), inset 0 1px 1px rgba(0,0,0,1);
-    border-radius:10px;
-}
+
 
 .progress span {
     height:100%;
@@ -213,7 +209,8 @@ html {
     top:0;
     left:0;
     display:block;
-    border-radius:10px;
+    pointer-events: visible;
+    /*border-radius:10px;*/
 }
 
 .progress-mobile span {
@@ -222,102 +219,59 @@ html {
     top:0;
     left:0;
     display:block;
-    border-radius:10px;
+    pointer-events: visible;
 }
 
 .timeBar{
     z-index:10;
     width:0;
-    background: -webkit-linear-gradient(top, rgba(107,204,226,1) 0%,rgba(29,163,208,1) 100%);
-    box-shadow: 0 0 7px rgba(107,204,226,.5);
+    background:  rgba(255,255,255,1);
 }
 .bufferBar{
     z-index:5;
     width:0;
-    background: rgba(255,255,255,0.2);
+    background: rgba(111,111,111,0.5) ;
+}
+.scrubber{
+    z-index:10;
+    width:20px;
+    left:-6px;
+    margin:-6px -6px 0 0;
+    pointer-events: none;
 }
 
-/* VOLUME BAR CSS */
-/* volume bar */
-.volume{
-    position:relative;
-    cursor:pointer;
-    width:70px;
-    height:10px;
-    float:right;
-    margin-top:10px;
-    margin-right:10px;
-}
-.volumeBar{
-    display:block;
-    height:100%;
-    position:absolute;
-    top:0;
-    left:0;
-    background-color:#eee;
-    z-index:10;
-}
+
+
 
 
 .playButton {
     float:left;
     color:white;
-
-    padding:5px;
-    /*background: rgba(0,0,0,0.5);*/
     cursor:pointer;
-    border-radius: 6px 0 0 6px;
-    border: 1px solid rgba(0,0,0,0.7);
-    box-shadow: inset 0 0 1px rgba(255,255,255,0.5);
     z-index:5;
     top:0;
     left:0;
 }
 
-.centerControl {
-    color:#ccc;
-    position:absolute;
-    bottom:2px;
 
-    z-index:5;
-}
 
 .playMiddleButton {
     float:left;
     color:white;
     width:100px;
     height:100px;
-    padding:5px;
-    /*background: rgba(0,0,0,0.5);*/
     cursor:pointer;
-    border-radius: 6px 6px 6px 6px;
-    border: 1px solid rgba(0,0,0,0.7);
-    box-shadow: inset 0 0 1px rgba(255,255,255,0.5);
     z-index:5;
-}
-
-.icon-play-middle {
-    background:url(../images/play.png) no-repeat;
-    width: 100px;
-    height:100px;
-    display: block;
-    opacity: 0.5;
-    margin: 4px 0 0 20px;
 }
 
 
 .replayMiddleButton {
+    position:absolute;
     float:left;
     color:white;
-    width:100px;
-    height:100px;
-    padding:0px;
-    /*background: rgba(0,0,0,0.5);*/
     cursor:pointer;
-    border-radius: 6px 6px 6px 6px;
-    border: 1px solid rgba(0,0,0,0.7);
-    box-shadow: inset 0 0 1px rgba(255,255,255,0.5);
     z-index:5;
+    pointer-events:visible;
 }
 
 .icon-replay-middle {
@@ -325,7 +279,6 @@ html {
     height: 90px;
     display: block;
     opacity: 0.9;
-    margin: 0px 0 0 0px;
 }
 
 
