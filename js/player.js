@@ -113,7 +113,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 //DOM-based player controls
     var playerControls = document.getElementById("player_controls");
 
-    var playIconSize = Util.isMobile() ? 130 : 50;
+    var playIconSize = Util.isMobile() ? 90 : 50;
 
 //create Loading Icon
     this.waitIcon = document.createElement("div");
@@ -122,7 +122,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
     this.waitIcon = document.createElement("span");
     this.waitIcon.classList.add( 'icon-wait');
-    this.waitIconImage =this.loadIcon("Icon-Wait.svg", 200, 200 ) ;
+    this.waitIconImage =this.loadIcon("Icon-Wait.svg", 160, 160 ) ;
     this.waitIcon.appendChild(this.waitIconImage);
     playerControls.appendChild(this.waitIcon);
 
@@ -314,7 +314,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         // Event listener for the mute button
         this.cardboardButton.addEventListener("click", function () {
             that.vrManager.setVRMode_();
-            that.fullScreen();
+           //that.fullScreen();
             that.setVideoUIState();
         });
     }
@@ -561,31 +561,31 @@ WEVR.Player.prototype.positionControls = function(){
 
     var width = this.container.offsetWidth;
 
-    this.progressBarWidth = playerControls.offsetWidth - (Util.isMobile() ? 80 : 210);
+    this.progressBarWidth = playerControls.offsetWidth - (Util.isMobile() ? 76 : 210);
     this.progressBar.style.width = this.progressBarWidth +"px";
 
 
     if ( Util.isMobile() ) {
-        var pwidth = 130;
+        var pwidth = 90;
         var left = (width - pwidth) / 2;
         var height = this.container.offsetHeight;
-        var pheight = 95;
+        var pheight = 55;
         var top = (height - pheight) / 2;
         this.playButton.style.left = left + "px";
         this.playButton.style.top = top + "px";
     }
 
-    var pwidth = 200;
+    var pwidth = 160;
     var left = (width - pwidth) / 2;
     var height = this.container.offsetHeight;
-    var pheight = 170;
+    var pheight = 125;
     var top = (height - pheight) / 2;
     this.waitIcon.style.top = top +"px";
     this.waitIcon.style.left = left + "px";
 
     //centered play button
    // var centeredPlayButton = document.getElementById("centered_play_button");
-    var pwidth = 80;
+    var pwidth = 90;
     left = (width - pwidth) / 2;
 
     this.replayMiddleButton.style.left = left + "px";

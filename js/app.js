@@ -72,7 +72,7 @@ var getVideoQuality= function() {
     } else if (Util.isAndroid()) {
         quality = "med";
     } else { //desktop
-        quality = "hi";
+        quality = "med"; //hi takes up too much bandwidth for streaming.
     }
 
     return quality;

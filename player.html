@@ -9,21 +9,30 @@
         //http://localhost/webplayer/player.html?url=https://i.wevr.com/uploads/files/4b967db9-8bb8-4d11-92ba-e8876c02b064/encountertest_01082015.mp4
 
         var VIDEO_URL = '/360videos/encountertest_01082015.mp4';
-        var VIDEO_OPTIONS={
+        /*var VIDEO_OPTIONS={
             "hi":'/360videos/encountertest_01082015.mp4',
             "med":'/360videos/encountertest_01082015.mp4',
             "low":'/360videos/encountertest_01082015.mp4'
+        };*/
+        var VIDEO_OPTIONS={
+           // "hi":"360videos/WAVES_Web_High.mp4",  //https://i.wevr.com/uploads/files/4539c9f1-0f47-4d5b-a8ef-e133d840681a/encountertest_01082015.mp4",
+            "hi":"360videos/TheVisitor_sync_2_WebHigh.mp4",  //https://i.wevr.com/uploads/files/4539c9f1-0f47-4d5b-a8ef-e133d840681a/encountertest_01082015.mp4",
+            "med":"360videos/TheVisitor_sync_2_WebMedium.mp4",
+            "low":"360videos/TheVisitor_sync_2_WebLow.mp4"
         };
-
         VIDEO_URL =VIDEO_OPTIONS.low;
 
-        var svgPath = "/xassets/vendor/webplayer/images/";
+        //var svgPath = "/xassets/vendor/webplayer/images/";
+        var svgPath = "images/";
 
     </script>
 
 
     <title>Wevr Player</title>
-    <link rel="stylesheet" href="/xassets/vendor/webplayer/css/styles.css" />
+    <!--<link rel="stylesheet" href="/xassets/vendor/webplayer/css/styles.css" />
+    <link rel="stylesheet" href="/xassets/fonts/wevr-larsseit/font.css">-->
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/font.css" />
 
 </head>
 <body>
@@ -43,17 +52,29 @@
 
 
 
-    <script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
-    <script src="/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js?v11"></script>
-    <script src="/xassets/vendor/webplayer/libs/three.js.r73/VREffect.js"></script>
-    <script src="/xassets/vendor/webplayer/libs/three.js.r73/VRControls.js"></script>
-    <script src="/xassets/vendor/webplayer/libs/requestAnimationFrame/RequestAnimationFrame.js"></script>
-    <script src="/xassets/vendor/webplayer/libs/webVrManager/webvr-polyfill.js"></script>
-    <script src="/xassets/vendor/webplayer/libs/webVrManager/webvr-manager.js?v11"></script>
-    <script src="/xassets/vendor/webplayer/js/wevr.js?v11"></script>
-    <script src="/xassets/vendor/webplayer/js/player.js?v11"></script>
-    <script src="/xassets/vendor/webplayer/js/app.js?v11"></script>
+  <!--
 
+  <script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
+     <script src="/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js?v09"></script>
+     <script src="/xassets/vendor/webplayer/libs/three.js.r73/VREffect.js"></script>
+     <script src="/xassets/vendor/webplayer/libs/three.js.r73/VRControls.js"></script>
+     <script src="/xassets/vendor/webplayer/libs/requestAnimationFrame/RequestAnimationFrame.js"></script>
+     <script src="/xassets/vendor/webplayer/libs/webVrManager/webvr-polyfill.js"></script>
+     <script src="/xassets/vendor/webplayer/libs/webVrManager/webvr-manager.js"></script>
+     <script src="/xassets/vendor/webplayer/js/wevr.js?v10"></script>
+     <script src="/xassets/vendor/webplayer/js/player.js?v10"></script>
+     <script src="/xassets/vendor/webplayer/js/app.js?v10"></script>-->
+
+    <script src="libs/three.js.r73/three.js"></script>
+    <script src="libs/three.js.r73/OrbitControls.js"></script> <!--JM: no need for orbit controls, using VRControls instead -->
+    <script src="libs/three.js.r73/VREffect.js"></script>
+    <script src="libs/three.js.r73/VRControls.js"></script>
+    <script src="libs/requestAnimationFrame/RequestAnimationFrame.js"></script>
+    <script src="libs/webVrManager/webvr-polyfill.js"></script>
+    <script src="libs/webVrManager/webvr-manager.js"></script>
+    <script src="js/wevr.js?v10"></script>
+    <script src="js/player.js?v10"></script>
+    <script src="js/app.js?v10"></script>
 
 </body>
 </html>
