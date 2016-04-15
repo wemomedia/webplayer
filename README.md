@@ -3,7 +3,7 @@
 
 This is the source code for Wevr's 360 video player. We use it to play previews of the VR content for [Wevr Transport](http://transport.wevr.com/ "Transport").
 
-The player is built with [Three.js](https://github.com/mrdoob/three.js/), and use the [WebVR Polyfill](https://github.com/borismus/webvr-polyfill) to render in stereo and head track for Cardboard VR.
+The player is built with [Three.js](https://github.com/mrdoob/three.js/), and uses the [WebVR Boilerplate](https://github.com/borismus/webvr-boilerplate) to enable Cardboard VR.
 
 ## Usage
 
