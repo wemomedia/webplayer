@@ -2935,8 +2935,7 @@ WebVRManager.prototype.onSettingsClick_ = function() {
  *
  */
 WebVRManager.prototype.normalToMagicWindow_ = function() {
-  // TODO: Re-enable pointer lock after debugging.
-  //this.requestPointerLock_();
+  this.requestPointerLock_();
   this.requestFullscreen_();
   this.wakelock.request();
 };
@@ -2958,21 +2957,10 @@ WebVRManager.prototype.vrToMagicWindow_ = function() {
   this.resize_();
 }
 
-    //JM added:
-    WebVRManager.prototype.vrToMagicWindowRelease_ = function(){
-        this.releasePointerLock_();
-        this.wakelock.release();
-        this.distorter.unpatch();
-
-        // Android bug: when returning from VR, resize the effect.
-        this.resize_();
-        this.resizeIfNeeded_(this.camera);
-    }
-
 WebVRManager.prototype.anyModeToNormal_ = function() {
   //this.effect.setFullScreen(false);
   this.exitFullscreen_();
-  //this.releaseOrientationLock_();
+ // this.releaseOrientationLock_();
   this.releasePointerLock_();
   this.wakelock.release();
   this.distorter.unpatch();
@@ -3005,8 +2993,11 @@ WebVRManager.prototype.updateRotateInstructions_ = function() {
   this.rotateInstructions.disableShowTemporarily();
   // In portrait VR mode, tell the user to rotate to landscape.
   if (this.mode == Modes.VR && !Util.isLandscapeMode() && Util.isMobile()) {
-     // this.rotateInstructions.show();
-      this.rotateInstructions.showTemporarily(3000); //JM changed
+      this.rotateInstructions.show();
+     // this.rotateInstructions.showTemporarily(3000); //JM changed in order to keep the rotateInstructions from getting stuck
+      if (this.player) { //JM added
+          this.player.pause();
+      }
   } else {
     this.rotateInstructions.hide();
   }
