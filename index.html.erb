@@ -6,6 +6,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'"> 
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<meta name="apple-mobile-web-app-capable"  content="yes"   />
     <meta  name="apple-mobile-web-app-status-bar-style"  content="black" />
@@ -16,15 +17,15 @@
              var svgPath = "/xassets/vendor/webplayer/images/";
     </script>
     <title>Wevr Player</title>
-    <link rel="stylesheet" href="/xassets/vendor/webplayer/css/styles.css?v24" />
     <link rel="stylesheet" href="/xassets/fonts/wevr-larsseit/font.css">
+    <%=cssfile("/xassets/vendor/webplayer/css/styles.css")%>
 </head>
 <body>
 
     <div style="display:none">
         <video id="video"   preload="auto" crossorigin="anonymous" webkit-playsinline ></video>
     </div>
-    <div id="notSupportedMessage" style="display:none">
+    <div id="notSupportedMessage" style="display:none;padding:40px">
         <p>Playback on this device is not supported. Please visit wevrtransport.com for a full list of supported platforms and devices.</p>
     </div>
 
@@ -37,18 +38,19 @@
   <div id="lowerScreen" class="lowerScreen"></div>
 
 
-     <script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
-     <script src="/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js?v11"></script>
-     <script src="/xassets/vendor/webplayer/libs/three.js.r73/VREffect.js"></script>
-     <script src="/xassets/vendor/webplayer/libs/three.js.r73/VRControls.js"></script>
-     <script src="/xassets/vendor/webplayer/libs/requestAnimationFrame/RequestAnimationFrame.js"></script>
-     <script src="/xassets/vendor/webplayer/libs/webVrManager/Promise.min.js"></script>
-     <script src="/xassets/vendor/webplayer/libs/webVrManager/webvr-polyfill.js"></script>
-     <script src="/xassets/vendor/webplayer/libs/webVrManager/webvr-manager.js?v22"></script>
-     <script src="/xassets/vendor/webplayer/js/wevr.js?v21"></script>
-     <script src="/xassets/vendor/webplayer/js/player.js?v22"></script>
-     <script src="/xassets/vendor/webplayer/js/app.js?v22"></script>
-
+     <%=jsfile("/xassets/vendor/webplayer/libs/three.js.r73/three.js")%>
+     <%=jsfile("/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js")%>
+     <%=jsfile("/xassets/vendor/webplayer/libs/three.js.r73/VREffect.js")%>
+     <%=jsfile("/xassets/vendor/webplayer/libs/three.js.r73/VRControls.js")%>
+     <%=jsfile("/xassets/vendor/webplayer/libs/requestAnimationFrame/RequestAnimationFrame.js")%>
+     <%=jsfile("/xassets/vendor/webplayer/libs/webVrManager/Promise.min.js")%>
+     <%=jsfile("/xassets/vendor/webplayer/libs/webVrManager/webvr-polyfill.js")%>
+     <%=jsfile("/xassets/vendor/webplayer/libs/webVrManager/webvr-manager.js")%>
+     <%=jsfile("/xassets/vendor/webplayer/js/wevr.js")%>
+     <%=jsfile("/xassets/vendor/webplayer/js/player.js")%>
+     <%=jsfile("/xassets/vendor/webplayer/js/player.js")%>
+     <%=jsfile("/xassets/vendor/webplayer/js/app.js")%>
+     
 
 </body>
 </html>
