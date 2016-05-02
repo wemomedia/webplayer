@@ -148,13 +148,16 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
 
 //create Progress Bar
+    this.scrubberBar = document.createElement("div"); //Adds a parent that is thicker than the children
+    this.scrubberBar.classList.add( Util.isMobile() ? "scrubber-bar-mobile" : "scrubber-bar");
+
     this.progressBar = document.createElement("div");
     this.progressBar.classList.add( Util.isMobile() ? "progress-bar-mobile" : "progress-bar");
-    this.progressBarWidth = playerControls.offsetWidth - 160;//Util.isMobile() ? 50 : 200;
-    this.progressBar.style.width = this.progressBarWidth +"px";
+    this.scrubberBarWidth = playerControls.offsetWidth - 160;//Util.isMobile() ? 50 : 200;
+    this.scrubberBar.style.width = this.scrubberBarWidth +"px";
     var progress = document.createElement("div");
-    //progress.width = this.progressBarWidth;
-    progress.classList.add( "progress");
+    //progress.width = this.scrubberBarWidth;
+    progress.classList.add( Util.isMobile() ? "progress-mobile" : "progress");
     this.progressBar.appendChild(progress);
     this.bufferBar = document.createElement("span");
     this.bufferBar.classList.add("bufferBar");
@@ -171,8 +174,8 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     this.scrubber.appendChild(scrubberImage);
     //this.scrubber.style.display = "none";
     progress.appendChild(this.scrubber);*/
-
-    playerControls.appendChild(this.progressBar);
+    this.scrubberBar.appendChild(progress);
+    playerControls.appendChild(this.scrubberBar);
 
     if (! Util.isMobile()) {
     //createMute Button
@@ -372,7 +375,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     // Event listeners for scrubbing
     var timeDrag = false;
 
-    this.progressBar.addEventListener('mouseup', function(e) {
+    this.scrubberBar.addEventListener('mouseup', function(e) {
 
         timeDrag = false;
         updatebar(e.pageX);
@@ -383,7 +386,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         }
 
     });
-    this.progressBar.addEventListener('mousemove', function(e) {
+    this.scrubberBar.addEventListener('mousemove', function(e) {
         if(timeDrag) {
             that.isPlaying = false;
            // Pause the video
@@ -393,7 +396,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     });
 
     if (Util.isMobile()) {
-        this.progressBar.addEventListener('touchend', function(e) {
+        this.scrubberBar.addEventListener('touchend', function(e) {
             timeDrag = false;
             that.updateAfterDrag= true;
             if (e.changedTouches && e.changedTouches.length) {
@@ -418,8 +421,8 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         //as well as progress bar
         var maxduration = that.video.duration;
 
-        var timeBarStartX = that.progressBar.offsetLeft + 10;//padding is 10px
-        var timeBarEndX  =  that.progressBarWidth;
+        var timeBarStartX = that.scrubberBar.offsetParent.offsetLeft + that.scrubberBar.offsetLeft + 10;//padding is 10px
+        var timeBarEndX  =  that.scrubberBarWidth;
 
         var percentage = 100 * ( x - timeBarStartX) / timeBarEndX;
 
@@ -436,7 +439,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         if (! timeDrag) {
           that.video.currentTime = maxduration * percentage / 100;
        }
-        that.timeBar.style.width =  ((maxduration * percentage / 100) / that.video.duration) *that.progressBarWidth + "px";
+        that.timeBar.style.width =  ((maxduration * percentage / 100) / that.video.duration) *that.scrubberBarWidth + "px";
 
     };
 
@@ -461,7 +464,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         if (that.video.currentTime > that.video.duration - 1){ //within 1 sec of the end
             that.setVideoUIState();
         }
-        that.timeBar.style.width =  (that.video.currentTime / that.video.duration) *that.progressBarWidth + "px";
+        that.timeBar.style.width =  (that.video.currentTime / that.video.duration) *that.scrubberBarWidth + "px";
 
     });
 
@@ -548,8 +551,8 @@ WEVR.Player.prototype.positionControls = function(){
 
     var width = this.container.offsetWidth;
 
-    this.progressBarWidth = playerControls.offsetWidth - (Util.isMobile() ? 76 : 210);
-    this.progressBar.style.width = this.progressBarWidth +"px";
+    this.scrubberBarWidth = playerControls.offsetWidth - (Util.isMobile() ? 76 : 210);
+    this.scrubberBar.style.width = this.scrubberBarWidth +"px";
 
 
     if ( Util.isMobile() ) {

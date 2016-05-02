@@ -14,7 +14,7 @@
 window.onload = function() {
 
    if ( Util.isIE( ) || Util.isIOS() ){
-        // see TWEB-57
+        // see TWEB-188
         // see TWEB-185
         document.getElementById("notSupportedMessage").style.display= "block";
         return;

@@ -167,33 +167,65 @@ html {
 
 /* PROGRESS BAR CSS */
 /* Progress bar */
-.progress-bar {
+.scrubber-bar {
     position: absolute;
-    bottom:0px;
+    bottom:3px;
     left:60px;
-    height:12px;
-    margin: 18px;
-    background: rgba(111,134,163,1);
+    height:18px;
+    margin: 0px 12px 12px 12px;
+    background: none;
     float:left;
-  /*  pointer-events:visible;*/
+    cursor:pointer;
+    pointer-events: visible;
+    /*  pointer-events:visible;*/
 }
 
-.progress-bar-mobile {
+.scrubber-bar-mobile {
     position: absolute;
-    bottom:0px;
+    bottom:3px;
     left:20px;
-    height:12px;
-    margin: 18px;
-    background: rgba(111,134,163,1);
+    height:18px;
+    margin: 0px 12px 12px 12px;
+    background: none;
     float:left;
     /*pointer-events:visible;*/
 }
 
-.progress {
+/* Progress bar */
+.progress-bar {
+    height:6px;
+    margin: 6px 0 0 0;
+    background: rgba(111,134,163,1);
+    left: 0px;
+    right :0px;
+}
+
+.progress-bar-mobile {
     height:12px;
+    margin: 6px 0 0 0;
+    background: rgba(111,134,163,1);
+    left: 0px;
+    right :0px;
+
+}
+
+.progress {
+    height:6px;
+    margin: 6px 0 0 0;
     position:relative;
     cursor:pointer;
     pointer-events: visible;
+    background: rgba(111,134,163,1);
+}
+
+
+.progress-mobile {
+    height:12px;
+    margin: 0px 0 0 0;
+    position:relative;
+    cursor:pointer;
+    pointer-events: visible;
+    background: rgba(111,134,163,1);
 }
 
 
