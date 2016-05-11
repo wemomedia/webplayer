@@ -169,10 +169,10 @@ html {
 /* Progress bar */
 .scrubber-bar {
     position: absolute;
-    bottom:3px;
-    left:60px;
-    height:18px;
-    margin: 0px 12px 12px 12px;
+    bottom:0px;
+    left:68px;
+    height:30px;
+    margin: 0px 12px 9px 12px;
     background: none;
     float:left;
     cursor:pointer;
@@ -211,7 +211,7 @@ html {
 
 .progress {
     height:6px;
-    margin: 6px 0 0 0;
+    margin: 12px 0 0 0;
     position:relative;
     cursor:pointer;
     pointer-events: visible;
