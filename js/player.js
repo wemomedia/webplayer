@@ -3,6 +3,8 @@ WEVR.Player = function(params) {
 	this.container = params.container;
     this.src = params.src;
     this.isPlaying = false;
+    this.isFirstTimePlay = true;
+    this.isMouseOverControls = false; //only on Desktop
     this.initThreeJS();
     this.initScene();
     this.initControls();
@@ -30,6 +32,8 @@ WEVR.Player.prototype.initThreeJS = function() {
 
         this.vrManager = new WebVRManager(this.renderer,
             this.vrEffect, {hideButton: false});
+        //Hack: Pointer back to the player so that the video can be paused on orientation change
+        this.vrManager.player = this;
     } else {
         this.renderer.setSize(this.container.clientWidth, window.innerHeight);
     }
@@ -58,14 +62,13 @@ WEVR.Player.prototype.initScene = function() {
     camera.position.z =  .001;
 	scene.add(camera);
 
-    //var initialPlayState = !Util.isAndroid();
     var initialPlayState =false;
     this.isPlaying =  initialPlayState;
 
     var video = document.getElementById('video');
 
   	// Create a video texture for playing the movie
-    /*var video = document.createElement('video');
+    /*var video = document.createElement('video'); //This fails on Safari. the video needs to be added as a tag, not programmatically
     video.autoplay = false;*/
     video.crossOrigin = "anonymous";
 
@@ -145,13 +148,16 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
 
 //create Progress Bar
+    this.scrubberBar = document.createElement("div"); //Adds a parent that is thicker than the children
+    this.scrubberBar.classList.add( Util.isMobile() ? "scrubber-bar-mobile" : "scrubber-bar");
+
     this.progressBar = document.createElement("div");
     this.progressBar.classList.add( Util.isMobile() ? "progress-bar-mobile" : "progress-bar");
-    this.progressBarWidth = playerControls.offsetWidth - 160;//Util.isMobile() ? 50 : 200;
-    this.progressBar.style.width = this.progressBarWidth +"px";
+    this.scrubberBarWidth = playerControls.offsetWidth - 160;//Util.isMobile() ? 50 : 200;
+    this.scrubberBar.style.width = this.scrubberBarWidth +"px";
     var progress = document.createElement("div");
-    //progress.width = this.progressBarWidth;
-    progress.classList.add( "progress");
+    //progress.width = this.scrubberBarWidth;
+    progress.classList.add( Util.isMobile() ? "progress-mobile" : "progress");
     this.progressBar.appendChild(progress);
     this.bufferBar = document.createElement("span");
     this.bufferBar.classList.add("bufferBar");
@@ -160,14 +166,16 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     this.timeBar.classList.add("timeBar");
     progress.appendChild(this.timeBar);
 
+
+
 /*    this.scrubber = document.createElement("span");
     this.scrubber.classList.add("scrubber");
     var scrubberImage = this.loadIcon("Icon-Scrubber.svg", 30, 30);
     this.scrubber.appendChild(scrubberImage);
     //this.scrubber.style.display = "none";
     progress.appendChild(this.scrubber);*/
-
-    playerControls.appendChild(this.progressBar);
+    this.scrubberBar.appendChild(progress);
+    playerControls.appendChild(this.scrubberBar);
 
     if (! Util.isMobile()) {
     //createMute Button
@@ -247,6 +255,20 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
     var that = this;
 
+    if ( ! Util.isMobile() ) {
+        var lowerScreenHotspot = document.getElementById("lowerScreen");
+        lowerScreenHotspot.addEventListener("mouseover", function () {
+            that.isMouseOverControls = true;
+            that.setVideoUIState();
+        });
+
+        lowerScreenHotspot.addEventListener("mouseout", function () {
+            that.isMouseOverControls = false;
+            that.setVideoUIState();
+        });
+    }
+
+
     var clickPlay =function() {
         if (that.video.paused == true) {
             //Note: we keep track of our intent to play instead of querying video.isPlaying,
@@ -256,7 +278,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
             that.isPlaying = true;
             //go full screen if we are not already fullscreen
             if (Util.isAndroid() && ! that.isFullScreen) {
-                that.fullScreen();
+                that.setFullScreen();
             }
 
             // Play the video
@@ -337,6 +359,7 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
             }
             that.setVideoUIState();
+            that.positionControls();
         });
     }
 
@@ -351,42 +374,19 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
 
     // Event listeners for scrubbing
     var timeDrag = false;
-   /* this.scrubber.addEventListener('mousedown', function(e) {
-        timeDrag = true;
-        //updatebar(e.pageX);
-    });
-    this.scrubber.addEventListener('mouseout', function(e) {
-        if ( timeDrag) {
-            updatebar(e.pageX);
-            timeDrag = false;
-        }
-    });*/
-    /*this.scrubber.addEventListener('mouseup', function(e) {
-        if (timeDrag) {
-            timeDrag = false;
-            updatebar(e.pageX);
-            if (that.video.currentTime <= that.video.duration - 1) { //we are one second from the end
-                if (that.replayMiddleButton) {
-                    that.replayMiddleButton.style.display = "none";
-                }
-            }
 
-        }
-    });*/
-    this.progressBar.addEventListener('mouseup', function(e) {
-       // if (timeDrag) {
-            timeDrag = false;
-            updatebar(e.pageX);
-            if (that.video.currentTime <= that.video.duration - 1) { //we are one second from the end
-                if (that.replayMiddleButton) {
-                    that.replayMiddleButton.style.display = "none";
-                }
+    this.scrubberBar.addEventListener('mouseup', function(e) {
+
+        timeDrag = false;
+        updatebar(e.pageX);
+        if (that.video.currentTime <= that.video.duration - 1) { //we are one second from the end
+            if (that.replayMiddleButton) {
+                that.replayMiddleButton.style.display = "none";
             }
-            /* that.isPlaying = true;
-             that.video.play();*/
-       // }
+        }
+
     });
-    this.progressBar.addEventListener('mousemove', function(e) {
+    this.scrubberBar.addEventListener('mousemove', function(e) {
         if(timeDrag) {
             that.isPlaying = false;
            // Pause the video
@@ -396,63 +396,36 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     });
 
     if (Util.isMobile()) {
-        this.progressBar.addEventListener('touchend', function(e) {
+        this.scrubberBar.addEventListener('touchend', function(e) {
             timeDrag = false;
             that.updateAfterDrag= true;
-            updatebar(e.pageX);
-            if (that.video.currentTime <= that.video.duration - 1) { //we are one second from the end
-                if (that.replayMiddleButton) {
-                    that.replayMiddleButton.style.display = "none";
-                }
-            }
-        });
-
-       /* this.scrubber.addEventListener('touchstart', function (e) {
-            e.preventDefault();
-            timeDrag = true;
-            updatebar(e.touches[0].pageX);
-        });
-        this.scrubber.addEventListener('touchend', function (e) {
-            e.preventDefault();
-            if (timeDrag) {
-                timeDrag = false;
-                updatebar(e.touches[0].pageX);
+            if (e.changedTouches && e.changedTouches.length) {
+                updatebar(e.changedTouches[0].pageX);
                 if (that.video.currentTime <= that.video.duration - 1) { //we are one second from the end
                     if (that.replayMiddleButton) {
                         that.replayMiddleButton.style.display = "none";
                     }
-                    that.isPlaying = true;
-                    that.video.play();
                 }
             }
         });
-        this.scrubber.addEventListener('touchmove', function (e) {
-            e.preventDefault();
-            if (timeDrag) {
-                that.isPlaying = false;
-                that.video.pause();
-                updatebar(e.touches[0].pageX);
-            }
-        });*/
+
     }
 
     var updatebar = function(x) {
 
         that.isInitialBuffering = true;
         that.setVideoUIState();
+
         //calculate drag position
         //and update video currenttime
         //as well as progress bar
         var maxduration = that.video.duration;
 
-      //  that.progressBarWidth = playerControls.offsetWidth - 160;//Util.isMobile() ? 50 : 200;
-     //   that.progressBar.style.width = that.progressBarWidth +"px";
-
-        var timeBarStartX = that.progressBar.offsetParent.offsetLeft + that.progressBar.offsetLeft + 10;//padding is 10px
-        var timeBarEndX  =  that.progressBarWidth;
+        var timeBarStartX = that.scrubberBar.offsetParent.offsetLeft + that.scrubberBar.offsetLeft + 10;//padding is 10px
+        var timeBarEndX  =  that.scrubberBarWidth;
 
         var percentage = 100 * ( x - timeBarStartX) / timeBarEndX;
-       // console.log( "x:" + x +",  timeBarStart: " + timeBarStartX + ", percentage:" + percentage );
+
         if (percentage > 100) {
             percentage = 100;
         }
@@ -462,14 +435,14 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         if (percentage > 99) {
             that.setVideoUIState();
         }
-       // that.timeBar.style.width = percentage + '%';
-       if (! timeDrag) {
+
+        if (! timeDrag) {
           that.video.currentTime = maxduration * percentage / 100;
        }
-        that.timeBar.style.width =  ((maxduration * percentage / 100) / that.video.duration) *that.progressBarWidth + "px";
+        that.timeBar.style.width =  ((maxduration * percentage / 100) / that.video.duration) *that.scrubberBarWidth + "px";
 
-        //that.scrubber.style.left =  ((maxduration * percentage / 100) / that.video.duration) *that.progressBarWidth- 6+ "px";
     };
+
 
     // Update the scrubber bar as the video plays
     this.video.addEventListener("timeupdate", function() {
@@ -478,7 +451,6 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
             that.setVideoUIState();
         }
         if (Util.isMobile() && that.updateAfterDrag ) {
-            //that.setVideoUIState();
 
             if (!that.scrubberTimeout ) {
                 that.scrubberTimeout = setTimeout(function () {
@@ -492,9 +464,8 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
         if (that.video.currentTime > that.video.duration - 1){ //within 1 sec of the end
             that.setVideoUIState();
         }
-        that.timeBar.style.width =  (that.video.currentTime / that.video.duration) *that.progressBarWidth + "px";
+        that.timeBar.style.width =  (that.video.currentTime / that.video.duration) *that.scrubberBarWidth + "px";
 
-       // that.scrubber.style.left =  (that.video.currentTime / that.video.duration) *that.progressBarWidth - 6 + "px";
     });
 
     // Timer to keep the buffer bar up to date
@@ -523,7 +494,13 @@ WEVR.Player.prototype.createDOMPlayerControls = function() {
     var container = document.getElementById("container");
     container.addEventListener( "click" , function() {
         var playerControls = document.getElementById("player_controls");
-        playerControls.style.display = "block";
+        if ( ! Util.isMobile() ) {
+            if ( !that.isPlaying )   {
+                playerControls.style.display = "block";
+            }
+        } else {
+            playerControls.style.display = "block";
+        }
         that.setVideoUIState();
         that.positionControls();
     })
@@ -545,11 +522,24 @@ WEVR.Player.prototype.loadIcon = function(source, width, height) {
     return img;
 }
 
+WEVR.Player.prototype.updateProgessBarWidth = function() {
+    this.progressBar.style.width = this.progressBarWidth +"px";
+    this.timeBar.style.width =(this.video.currentTime / this.video.duration) *this.progressBarWidth + "px";
+}
+
 WEVR.Player.prototype.play = function() {
     this.isPlaying = true;
 
     // Play the video
     this.video.play();
+    this.setVideoUIState();
+}
+
+WEVR.Player.prototype.pause = function(){
+    this.isPlaying = false;
+    // Pause the video
+    this.video.pause();
+
     this.setVideoUIState();
 }
 
@@ -561,8 +551,8 @@ WEVR.Player.prototype.positionControls = function(){
 
     var width = this.container.offsetWidth;
 
-    this.progressBarWidth = playerControls.offsetWidth - (Util.isMobile() ? 76 : 210);
-    this.progressBar.style.width = this.progressBarWidth +"px";
+    this.scrubberBarWidth = playerControls.offsetWidth - (Util.isMobile() ? 76 : 210);
+    this.scrubberBar.style.width = this.scrubberBarWidth +"px";
 
 
     if ( Util.isMobile() ) {
@@ -604,12 +594,29 @@ WEVR.Player.prototype.setVideoUIState = function(){
         clearTimeout(this.scrubberTimeout);
         this.scrubberTimeout = null;
     }
+    var playerControls = document.getElementById("player_controls");
 
     if (this.isInitialBuffering){
         this.waitIcon.style.display = "block";
         this.playImage.style.display = "none";
         this.pauseImage.style.display = "none";
+        //To keep the embedded iFrame clean on mobile, don't show the progressBar at first
+        if (Util.isMobile() ){
+            this.progressBar.style.display = "none";
+        }
         return;
+    } else {
+        //More logic to keep the embedded iFrame clean on mobile
+        if (Util.isMobile()) {
+            if (this.isPlaying && !this.isFirstTimePlay) {
+                this.progressBar.style.display = "block";
+                this.isFirstTimePlay = false;
+            } else if (Util.isMobile() && !this.isFullScreen) {
+                this.progressBar.style.display = "none";
+            } else if (Util.isMobile() && this.isFullScreen) {
+                this.progressBar.style.display = "block";
+            }
+        }
     }
     this.waitIcon.style.display = "none";
     if (this.video.currentTime > this.video.duration - 1){ //we are one second from the end
@@ -618,12 +625,14 @@ WEVR.Player.prototype.setVideoUIState = function(){
             this.playImage.style.display = "none";
             this.pauseImage.style.display = "none";
         }
+
         this.isPlaying = false;
     }
      if (this.isPlaying ) {
          this.playImage.style.display = "none";
          this.waitIcon.style.display = "none";
          this.pauseImage.style.display = "block";
+
          if (this.replayMiddleButton){
              this.replayMiddleButton.style.display = "none";
          }
@@ -639,8 +648,10 @@ WEVR.Player.prototype.setVideoUIState = function(){
          }
          this.pauseImage.style.display = "none";
 
-         var playerControls = document.getElementById("player_controls");
          playerControls.style.display = "block";
+    }
+    if (this.isMouseOverControls) {
+        playerControls.style.display = "block";
     }
     if ( ! this.isFullScreen) {
         if(this.collapseFullScreenImage) {
@@ -746,43 +757,55 @@ WEVR.Player.prototype.refreshSize = function() {
 
     if (this.vrEffect) {
         this.vrEffect.setSize(window.innerWidth, window.innerHeight);
+        this.camera.aspect = window.innerWidth / window.innerHeight;
     } else {
         this.renderer.setSize(fullWidth, window.innerHeight);
+        this.camera.aspect = fullWidth / window.innerHeight;
     }
+    this.camera.updateProjectionMatrix( );
 
     if (this.isFullScreen) {
         this.container.style.left = this.container.style.top = 0;
     }
     this.setVideoUIState();
     this.positionControls();
+    this.updateProgessBarWidth();
 }
 
 WEVR.Player.prototype.fullScreen = function() {
 
-    var canvas = this.container.parentElement;
-
     if (! this.isFullScreen){
-        this.isFullScreen = true;
-        if (canvas.requestFullscreen) {
-            canvas.requestFullscreen();
-        } else if (canvas.mozRequestFullScreen) {
-            canvas.mozRequestFullScreen(); // Firefox
-        } else if (canvas.webkitRequestFullscreen) {
-            canvas.webkitRequestFullscreen(); // Chrome and Safari
-        }
+       this.setFullScreen();
        /* if (!this.isPlaying) {
             this.play();
         }*/
 
     } else {
-        this.isFullScreen = false;
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if ( document.mozCancelFullScreen ) {
-            document.mozCancelFullScreen();
-        } else {
-            document.webkitExitFullscreen();
-        }
+       this.unsetFullScreen();
+    }
+}
+
+WEVR.Player.prototype.setFullScreen = function() {
+    this.isFullScreen = true;
+    var canvas = this.container.parentElement;
+
+    if (canvas.requestFullscreen) {
+        canvas.requestFullscreen();
+    } else if (canvas.mozRequestFullScreen) {
+        canvas.mozRequestFullScreen(); // Firefox
+    } else if (canvas.webkitRequestFullscreen) {
+        canvas.webkitRequestFullscreen(); // Chrome and Safari
+    }
+}
+
+WEVR.Player.prototype.unsetFullScreen = function(){
+    this.isFullScreen = false;
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if ( document.mozCancelFullScreen ) {
+        document.mozCancelFullScreen();
+    } else {
+        document.webkitExitFullscreen();
     }
 }
 

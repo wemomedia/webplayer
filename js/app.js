@@ -20,6 +20,14 @@ window.onload = function() {
         return;
     }
 
+    //Following is commented out to test the CSP meta tag on app/views/player/index.html.
+/*    if ( Util.isAndroid() &&  /(Chrome\/2)\w/g.test(navigator.userAgent)  ) {
+        // see TWEB-229
+        document.getElementById("notSupportedMessage").innerHTML = "<p>Playback on this device is not supported. Please try the preview in the Chrome browser.</p>";
+        document.getElementById("notSupportedMessage").style.display= "block";
+        return ;
+    }*/
+
     /* Steve, right at the top. */
     var str = window.location.search;
     var params = {};
