@@ -58,7 +58,8 @@ WEVR.Player.prototype.initScene = function() {
     var scene = new THREE.Scene();
 
     // Add  a camera so we can view the scene
-    var camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 1, 10000 );
+    //prior value:90
+    var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
     camera.position.z =  .001;
 	scene.add(camera);
 
@@ -104,6 +105,7 @@ WEVR.Player.prototype.initScene = function() {
 
     // Finally, add the mesh to our scene
     scene.add( sphere );
+
 
     this.scene = scene;
     this.camera = camera;
@@ -522,9 +524,10 @@ WEVR.Player.prototype.loadIcon = function(source, width, height) {
     return img;
 }
 
-WEVR.Player.prototype.updateProgessBarWidth = function() {
-    this.progressBar.style.width = this.progressBarWidth +"px";
-    this.timeBar.style.width =(this.video.currentTime / this.video.duration) *this.progressBarWidth + "px";
+WEVR.Player.prototype.updateScrubberBarWidth = function() {
+    this.scrubberBar.style.width = this.scrubberBarWidth +"px";
+
+    this.timeBar.style.width =(this.video.currentTime / this.video.duration) *this.scrubberBarWidth + "px";
 }
 
 WEVR.Player.prototype.play = function() {
@@ -553,7 +556,6 @@ WEVR.Player.prototype.positionControls = function(){
 
     this.scrubberBarWidth = playerControls.offsetWidth - (Util.isMobile() ? 76 : 210);
     this.scrubberBar.style.width = this.scrubberBarWidth +"px";
-
 
     if ( Util.isMobile() ) {
         var pwidth = 90;
@@ -769,7 +771,7 @@ WEVR.Player.prototype.refreshSize = function() {
     }
     this.setVideoUIState();
     this.positionControls();
-    this.updateProgessBarWidth();
+    this.updateScrubberBarWidth();
 }
 
 WEVR.Player.prototype.fullScreen = function() {
