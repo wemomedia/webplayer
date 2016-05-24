@@ -59,7 +59,7 @@ WEVR.Player.prototype.initScene = function() {
 
     // Add  a camera so we can view the scene
     //prior value:90
-    var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+    var camera = new THREE.PerspectiveCamera( verticalFov, window.innerWidth / window.innerHeight, 1, 10000 );
     camera.position.z =  .001;
 	scene.add(camera);
 
@@ -105,6 +105,7 @@ WEVR.Player.prototype.initScene = function() {
 
     // Finally, add the mesh to our scene
     scene.add( sphere );
+
 
 
     this.scene = scene;

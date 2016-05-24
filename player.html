@@ -10,16 +10,17 @@
         //http://localhost/webplayer/player.html?url=https://i.wevr.com/uploads/files/4b967db9-8bb8-4d11-92ba-e8876c02b064/encountertest_01082015.mp4
 
         var VIDEO_URL = '/360videos/encountertest_01082015.mp4';
-        var VIDEO_OPTIONS={
+       var VIDEO_OPTIONS={
             "hi":'/360videos/encountertest_01082015.mp4',
             "med":'/360videos/encountertest_01082015.mp4',
             "low":'/360videos/encountertest_01082015.mp4'
         };
-
         VIDEO_URL =VIDEO_OPTIONS.low;
 
         var svgPath = "/xassets/vendor/webplayer/images/";
 
+        //verticalFov can be altered in the query string ie "?fov=75"
+        var verticalFov = 60;
 
     </script>
 
@@ -27,7 +28,6 @@
     <title>Wevr Player</title>
     <link rel="stylesheet" href="/xassets/vendor/webplayer/css/styles.css" />
     <link rel="stylesheet" href="/xassets/fonts/wevr-larsseit/font.css">
-
 
 </head>
 <body>
@@ -48,6 +48,7 @@
     <div id="lowerScreen" class="lowerScreen"></div>
 
 
+
   <script src="/xassets/vendor/webplayer/libs/three.js.r73/three.js"></script>
      <script src="/xassets/vendor/webplayer/libs/three.js.r73/OrbitControls.js?v09"></script>
      <script src="/xassets/vendor/webplayer/libs/three.js.r73/VREffect.js"></script>
@@ -59,8 +60,6 @@
      <script src="/xassets/vendor/webplayer/js/wevr.js?v10"></script>
      <script src="/xassets/vendor/webplayer/js/player.js?v10"></script>
      <script src="/xassets/vendor/webplayer/js/app.js?v10"></script>
-
-
 
 </body>
 </html>

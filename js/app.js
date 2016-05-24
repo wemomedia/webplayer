@@ -32,15 +32,18 @@ window.onload = function() {
     var str = window.location.search;
     var params = {};
 
-    str.replace(
+       str.replace(
         new RegExp( "([^?=&]+)(=([^&]*))?", "g" ),
         function( $0, $1, $2, $3 ){
             params[ $1 ] = $3;
         }
     );
 
-    document.getElementsByTagName("body")[0].style.overflow = "hidden";
+    if (params.hasOwnProperty( "fov")) {
+        verticalFov = + params.fov;
+    }
 
+    document.getElementsByTagName("body")[0].style.overflow = "hidden";
 
 
     // WebGL player/canvas

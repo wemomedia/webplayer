@@ -14,7 +14,10 @@
     		var VIDEO_URL = "<%=@url%>";
             var VIDEO_OPTIONS=<%=raw(@urls.to_json)%>;
 
-             var svgPath = "/xassets/vendor/webplayer/images/";
+            var svgPath = "/xassets/vendor/webplayer/images/";
+
+            //verticalFov can be altered in the query string ie "?fov=75"
+            var verticalFov = 60;
     </script>
     <title>Wevr Player</title>
     <link rel="stylesheet" href="/xassets/fonts/wevr-larsseit/font.css">
